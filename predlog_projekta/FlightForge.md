@@ -129,8 +129,8 @@ Baza znanja obuhvata podatke o modelima aviona i elektronskim komponentama, kao 
 Forward chaining se primenjuje nakon što je kombinacija komponenti poznata. Na osnovu odabranih komponenti sistem određuje da li su one međusobno kompatibilne, da li je kombinacija zadovoljavajuća za odabrani model, kao i da li u narednim danima postoji prikladan termin za letenje. Pravila su organizovana u tri nivoa:
 
 **Nivo 1** — korekcija težine, računanje ukupne mase i potrošnje modela
-- Ako je težina korisnikove karton pene različita od referentne (2.927 g/dm²), onda se dry weight modela koriguje u odnosu na datu težinu
-- Ako je faktor skaliranja različit od 1, model se koriguje tako što se dry weight modela množi sa kvadratom faktora skaliranja
+- Ako je težina korisnikove karton pene različita od referentne (2.927 g/dm²), onda se model koriguje tako što se referentni dry weight skalira u odnosu na unetu težinu karton pene
+- Ako je faktor skaliranja različit od 1, onda model se koriguje tako što se dry weight modela množi sa kvadratom faktora skaliranja
 - Ako je korigovana težina airframe-a izračunata, onda se uz pomoć `accumulate` funkcije sabira sa težinama svih odabranih komponenti i dobija ukupna težina modela
 - Ako su sve komponente odabrane, onda se `accumulate` funkcijom sabira maksimalna potrošnja svih komponenti (motor, servoi, prijemnik) i dobija ukupna maksimalna potrošnja modela
 
@@ -170,11 +170,26 @@ Sistem može generisati različite validne kombinacije u zavisnosti od odabranog
 
 #### 3.3.4 CEP
 
-Sistem periodično prikuplja i analizira vremensku prognozu. Svaki sat u prognozi se ocenjuje kao idealan, prihvatljiv ili neprikladan. Na osnovu zadatog trajanja termina i ocene za svaki sat prognoze, sistem predlaže najbolje termine za letenje. Korisnik može da odabere neki od ponuđenih termina i time označi da tada planira let. Sistem prati odabrane termine i vremensku prognozu, te na osnovu njih reaguje na sledeće događaje:
+CEP podsistem reaguje na promene vremenskih uslova i akcije korisnika kako bi predložio termine za letenje, obavestio korisnika kada zakazani termin više nije prikladan i upozorio ga tokom samog leta. Ocenjivanje vremenskih uslova za konkretan model (idealan, prihvatljiv ili neprikladan), kao i pragovi prihvatljivosti vetra i temperature na kojima se ocene zasnivaju, definisani su pravilima trećeg nivoa forward chaining-a. Sistem radi u `STREAM` režimu obrade događaja, jer pravila koriste vremenske operatore između intervalnih događaja toka prognoze i toka korisničkih akcija.
 
-- Ako je odabrani termin sutra, onda podseti korisnika da se pripremi za let
-- Ako se prognoza osvežila i uslovi u odabranom terminu su se pogoršali, onda obavesti korisnika da termin više nije prikladan i predloži nove termine za letenje
-- Ako se odabrani termin trenutno odvija i osvežena prognoza pokazuje naglo pogoršanje uslova u narednom periodu, onda upozori korisnika da završi let
+##### Ulazni događaji
+
+- Sat prognoze — intervalni događaj iz toka prognoze, obuhvata jedan sat predviđenih uslova: temperaturu, vetar, padavine i deo dana
+- Zakazani termin — intervalni događaj iz toka korisničkih akcija, obuhvata vreme u kome korisnik planira let za određeni model
+
+Pri svakom osvežavanju prognoze, prethodni sati prognoze za isti vremenski period zamenjuju se novima, automatski okidajući ponovno ocenjivanje svih pravila koja se na njih oslanjaju. Slično tome, kada korisnik otkaže let, zakazan termin se uklanja iz radne memorije, čime se gase sva pravila vezana za taj termin.
+
+##### Pravila
+
+Svaki sat prognoze se na osnovu zadatog modela aviona ocenjuje kao idealan, prihvatljiv ili neprikladan. Na osnovu tih ocena, zakazanih termina i trenutnog vremena, sistem reaguje na sledeće situacije:
+
+- Ako je termin sutra i podsetnik još nije poslat, onda obavesti korisnika da se pripremi za let
+- Ako bar jedan sat unutar zakazanog termina postane neprikladan, onda obavesti korisnika da termin više nije prikladan i predloži nove termine
+- Ako trenutno vreme upada unutar zakazanog termina i bar jedan od naredna dva sata prognoze je neprikladan, onda upozori korisnika da završi let
+
+##### Upit za predlog termina
+Predlozi termina formiraju se na zahtev, traženjem uzastopnih sati u prognozi koji pokrivaju zadato trajanje termina i ne sadrže nijedan neprikladan sat, rangirano po broju idealnih sati.
+
 
 ## 4. Reference
 
