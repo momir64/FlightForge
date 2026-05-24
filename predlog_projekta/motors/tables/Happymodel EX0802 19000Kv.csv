@@ -1,0 +1,8 @@
+Model,No-load test,Propellers,Voltage (v),Current (A),thrust (g),Power (w),Efficiency (g/w)
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Gemfan 1219 propeller 31mm,3.7,0.97,8.8,3.589,2.451936473
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Gemfan 1219 propeller 31mm,3.7,2.01,17.3,7.437,2.326206804
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Gemfan 1219 propeller 31mm,3.7,2.62,21.5,9.694,2.217866722
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Happymodel 40mm 4-blade propeller,3.7,0.98,9.8,3.626,2.702702703
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Happymodel 40mm 4-blade propeller,3.7,2.06,18.4,7.622,2.41406455
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Happymodel 40mm 4-blade propeller,3.7,2.96,23.4,10.952,2.136596056
+EX0802 KV19000 One-Piece Design,0.45A 38320RPM @2V 19160KV,Happymodel 40mm 4-blade propeller,3.7,4.09,29.3,15.133,1.936165995

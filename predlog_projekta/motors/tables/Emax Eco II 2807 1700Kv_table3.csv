@@ -1,0 +1,7 @@
+Motor type,The voltage (V),Propeller,current (A),thrust (G),power (W),efficiency (G/W),speed (RPM)
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,3.2,300,53.76,5.58,8000
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,5.1,500,85.68,5.84,10900
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,9.6,700,161.28,4.34,11700
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,13.9,900,233.52,3.85,13300
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,18.9,1100,317.52,3.46,14600
+ECOII-2807-1700KV,16.8,HQ 7*3.5*3 3-blade propeller,47.1,2060,791.28,2.60,Max

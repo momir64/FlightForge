@@ -1,0 +1,7 @@
+Motor type,The voltage (V),Propeller,current (A),thrust (G),power (W),efficiency (G/W),speed (RPM)
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,3.3,300,55.44,5.41,8300
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,6.2,500,104.16,4.80,11000
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,9.8,700,164.64,4.25,12200
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,14.3,900,240.24,3.75,13800
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,19.7,1100,330.96,3.32,15300
+ECOII-2807-1700KV,16.8,Gemfan7042 2-blade propeller,46.2,1810,776.16,2.33,Max
