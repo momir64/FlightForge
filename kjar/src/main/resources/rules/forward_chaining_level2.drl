@@ -1,0 +1,144 @@
+package rules
+
+import rs.moma.flightforge.model.BuildConfig;
+import rs.moma.flightforge.model.BuildWarning;
+import rs.moma.flightforge.model.BuildWarningType;
+import rs.moma.flightforge.model.Servo;
+
+rule "L2.1 - Compute T/W factor"
+    when
+        $build : BuildConfig(
+            twFactor == null,
+            allUpWeight != null,
+            allUpWeight > 0,
+            $auw : allUpWeight,
+            $mc : motorConfiguration != null
+        )
+    then
+        modify($build) { setTwFactor($mc.getThrust() / $auw) }
+end
+
+rule "L2.2 - Compute WCL factor"
+    when
+        $build : BuildConfig(
+            wclFactor == null,
+            allUpWeight != null,
+            $auw : allUpWeight,
+            $airplane : airplane != null,
+            $prefs : userPreferences != null
+        )
+    then
+        double sf = $prefs.getScaleFactor();
+        double adjustedArea = $airplane.getWingArea() * sf * sf;
+        modify($build) { setWclFactor($auw / Math.pow(adjustedArea, 1.5)) }
+end
+
+rule "L2.3 - Compute wing loading"
+    when
+        $build : BuildConfig(
+            wingLoading == null,
+            allUpWeight != null,
+            $auw : allUpWeight,
+            $airplane : airplane != null,
+            $prefs : userPreferences != null
+        )
+    then
+        double sf = $prefs.getScaleFactor();
+        double adjustedArea = $airplane.getWingArea() * sf * sf;
+        modify($build) { setWingLoading($auw / adjustedArea) }
+end
+
+// totalMaxConsumption is in Amps; capacity is in mAh, so divide by 1000 to get Ah before dividing.
+rule "L2.4 - Compute estimated flight time"
+    when
+        $build : BuildConfig(
+            estimatedFlightTime == null,
+            totalMaxConsumption != null,
+            totalMaxConsumption > 0,
+            $total : totalMaxConsumption,
+            $battery : battery != null
+        )
+    then
+        modify($build) { setEstimatedFlightTime(($battery.getCapacity() / 1000.0) / $total * 60.0) }
+end
+
+// Battery max discharge = capacity [mAh] × C-rating / 1000 = Amperes
+rule "L2.5 - Warning: battery max current insufficient"
+    when
+        $build : BuildConfig(
+            $total : totalMaxConsumption != null,
+            $battery : battery != null
+        )
+        eval($battery.getCapacity() * $battery.getCRating() / 1000.0 < $total)
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BATTERY, build == $build)
+    then
+        insert(new BuildWarning(
+            BuildWarningType.INCOMPATIBLE_BATTERY,
+            String.format("Battery max output (%.1f A) is less than total consumption (%.1f A). " +
+                "Choose a higher C-rating or larger capacity.",
+                $battery.getCapacity() * $battery.getCRating() / 1000.0, $total),
+            $battery.getName(),
+            $build
+        ));
+end
+
+rule "L2.6 - Warning: ESC current rating too low"
+    when
+        $build : BuildConfig(
+            $esc : esc != null,
+            $mc : motorConfiguration != null
+        )
+        eval($esc.getContinuousCurrent() < $mc.getMaxCurrent())
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_ESC, build == $build)
+    then
+        insert(new BuildWarning(
+            BuildWarningType.INCOMPATIBLE_ESC,
+            String.format("ESC continuous rating (%.0f A) is below motor max current (%.0f A). " +
+                "The ESC may overheat or fail under load.", $esc.getContinuousCurrent(), $mc.getMaxCurrent()),
+            $esc.getName(),
+            $build
+        ));
+end
+
+// becMaxCurrent is in A, servo stallCurrent and receiver powerConsumption are in mA (from DB).
+rule "L2.7 - Warning: BEC current insufficient"
+    when
+        $build : BuildConfig(
+            $esc : esc != null,
+            $servos : servos != null,
+            $receiver : receiver != null
+        )
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BEC, build == $build)
+    then
+        double controlLoad = $servos.stream().mapToDouble(s -> ((Servo) s).getStallCurrent()).sum() / 1000.0
+                           + $receiver.getPowerConsumption() / 1000.0;
+        if ($esc.getBecMaxCurrent() < controlLoad) {
+            insert(new BuildWarning(
+                BuildWarningType.INCOMPATIBLE_BEC,
+                String.format("BEC max current (%.2f A) is less than servo + receiver load (%.2f A). " +
+                    "Control surfaces may become unresponsive.", $esc.getBecMaxCurrent(), controlLoad),
+                $esc.getName(),
+                $build
+            ));
+        }
+end
+
+rule "L2.8 - Warning: estimated flight time too short"
+    when
+        $build : BuildConfig(
+            $eft : estimatedFlightTime != null,
+            $prefs : userPreferences != null,
+            userPreferences.minFlightTime != null,
+            $battery : battery != null
+        )
+        eval($eft < $prefs.getMinFlightTime())
+        not BuildWarning(type == BuildWarningType.INSUFFICIENT_CAPACITY, build == $build)
+    then
+        insert(new BuildWarning(
+            BuildWarningType.INSUFFICIENT_CAPACITY,
+            String.format("Estimated flight time (%.1f min) is below required minimum (%d min). " +
+                "Use a higher capacity battery.", $eft, $prefs.getMinFlightTime()),
+            $battery.getName(),
+            $build
+        ));
+end

@@ -1,0 +1,57 @@
+package rules
+
+import rs.moma.flightforge.model.BuildConfig;
+import rs.moma.flightforge.model.Servo;
+
+rule "L1.1 - Compute corrected dry weight"
+    when
+        $build : BuildConfig(
+            correctedDryWeight == null,
+            $airplane : airplane != null,
+            $prefs : userPreferences != null
+        )
+    then
+        double foamRatio = $prefs.getFoamboardWeight() / 2.927;  // 2.927 g/dm²
+        double sf = $prefs.getScaleFactor();
+        modify($build) { setCorrectedDryWeight($airplane.getDryWeight() * foamRatio * sf * sf) }
+end
+
+rule "L1.2 - Compute all-up weight"
+    when
+        $build : BuildConfig(
+            allUpWeight == null,
+            correctedDryWeight != null,
+            $corrected : correctedDryWeight,
+            $mc : motorConfiguration != null,
+            $esc : esc != null,
+            $battery : battery != null,
+            $servos : servos != null,
+            $receiver : receiver != null
+        )
+    then
+        double auw = $corrected
+                   + $mc.getMotor().getWeight()
+                   + $mc.getPropeller().getWeight()
+                   + $esc.getWeight()
+                   + $battery.getWeight()
+                   + $servos.stream().mapToDouble(s -> ((Servo) s).getWeight()).sum()
+                   + $receiver.getWeight();
+        modify($build) { setAllUpWeight(auw) }
+end
+
+// totalMaxConsumption is stored in Amperes.
+// servo.stallCurrent and receiver.powerConsumption are in mA in DB, so both are divided by 1000.
+rule "L1.3 - Compute total max consumption"
+    when
+        $build : BuildConfig(
+            totalMaxConsumption == null,
+            $mc : motorConfiguration != null,
+            $servos : servos != null,
+            $receiver : receiver != null
+        )
+    then
+        double total = $mc.getMaxCurrent()
+                     + $servos.stream().mapToDouble(s -> ((Servo) s).getStallCurrent()).sum() / 1000.0
+                     + $receiver.getPowerConsumption() / 1000.0;
+        modify($build) { setTotalMaxConsumption(total) }
+end
