@@ -66,100 +66,100 @@ INSERT INTO motor (id, name, weight, price, available, shop_link) VALUES
 
 -- Propellers
 INSERT INTO propeller (id, diameter, pitch, blade_count, weight, price, available, shop_link) VALUES
-(1,  1.22, 0.90, 3,  0.3, NULL, true, NULL), -- Gemfan 1219-3 31mm
-(2,  1.57, 0.90, 4,  0.5, NULL, true, NULL), -- Happymodel 40mm 4-blade
-(3,  1.60, 0.80, 3,  0.4, NULL, true, NULL), -- GF 1608-3
-(4,  1.60, 0.90, 4,  0.5, NULL, true, NULL), -- GF 1609-4
-(5,  1.60, 1.00, 2,  0.3, NULL, true, NULL), -- Gemfan 1610-2
-(6,  1.60, 3.50, 3,  0.4, NULL, true, NULL), -- GF 1635-3
-(7,  1.60, 3.50, 4,  0.5, NULL, true, NULL), -- GF 1635-4
-(8,  1.77, 1.50, 2,  0.5, NULL, true, NULL), -- GF 45mm-2
-(9,  1.77, 1.50, 3,  0.7, NULL, true, NULL), -- GF 45mm-3
-(10, 2.00, 1.50, 2,  0.8, NULL, true, NULL), -- GF 2015-2
-(11, 2.00, 2.00, 3,  1.0, NULL, true, NULL), -- HQ T2x2x3
-(12, 2.00, 2.00, 4,  1.2, NULL, true, NULL), -- GF 2020-4
-(13, 2.00, 2.00, 5,  1.5, NULL, true, NULL), -- Gemfan 2020-D51MM-5
-(14, 2.00, 2.30, 3,  1.0, NULL, true, NULL), -- GF 2023-3
-(15, 2.00, 2.35, 2,  0.8, NULL, true, NULL), -- Qianfeng 20235
-(16, 2.00, 2.50, 3,  1.0, NULL, true, NULL), -- HQ 2x2.5x3
-(17, 2.00, 3.50, 3,  1.0, NULL, true, NULL), -- DAL 2x3.5x3
-(18, 2.00, 4.00, 3,  1.0, NULL, true, NULL), -- GF 2040-3
-(19, 2.17, 1.50, 2,  1.0, NULL, true, NULL), -- 55mm 2-blade
-(20, 2.20, 1.60, 3,  1.1, NULL, true, NULL), -- HQ T2.2x1.6x3
-(21, 2.20, 1.90, 3,  1.1, NULL, true, NULL), -- Gemfan 2219-3
-(22, 2.48, 2.00, 2,  1.2, NULL, true, NULL), -- GF D63 2-blade
-(23, 2.48, 2.00, 3,  1.5, NULL, true, NULL), -- GF D63 3-blade
-(24, 2.48, 2.00, 5,  2.0, NULL, true, NULL), -- GF D63 5-blade
-(25, 2.50, 1.20, 3,  1.5, NULL, true, NULL), -- Qianfeng 2512-3
-(26, 2.50, 2.60, 2,  1.2, NULL, true, NULL), -- GF 5126-2
-(27, 2.50, 2.50, 3,  1.5, NULL, true, NULL), -- GF 5125-3
-(28, 2.50, 4.00, 3,  1.5, NULL, true, NULL), -- GF 2540-3
-(29, 2.56, 2.00, 2,  1.2, NULL, true, NULL), -- GF 65R 2-blade
-(30, 2.56, 2.00, 3,  1.5, NULL, true, NULL), -- HQ T6SR 3-blade
-(31, 2.90, 2.70, 3,  2.0, NULL, true, NULL), -- HQ TD2.9x2.7x3
-(32, 2.99, 2.00, 3,  2.0, NULL, true, NULL), -- HQ T76-3
-(33, 2.99, 2.00, 4,  2.5, NULL, true, NULL), -- HQ DT76-4B
-(34, 3.00, 1.60, 3,  2.5, NULL, true, NULL), -- GF 3016-3
-(35, 3.00, 1.80, 2,  2.0, NULL, true, NULL), -- GF 3018-2
-(36, 3.00, 1.80, 3,  2.5, NULL, true, NULL), -- DAL 3018-3
-(37, 3.00, 2.00, 2,  2.0, NULL, true, NULL), -- HQ 3x2x2
-(38, 3.00, 2.80, 3,  2.5, NULL, true, NULL), -- GF 3028-3
-(39, 3.00, 3.00, 3,  2.5, NULL, true, NULL), -- HQ T3x3x3 3-blade
-(40, 3.00, 3.50, 3,  2.5, NULL, true, NULL), -- GF 3035-3
-(41, 3.00, 4.00, 3,  2.5, NULL, true, NULL), -- HQ 3x4x3
-(42, 3.00, 5.60, 3,  2.5, NULL, true, NULL), -- GF 3056-3
-(43, 3.54, 2.50, 3,  3.0, NULL, true, NULL), -- GF D90-3
-(44, 3.50, 2.00, 3,  3.0, NULL, true, NULL), -- GF 3520-3
-(45, 3.50, 2.50, 3,  3.0, NULL, true, NULL), -- HQ T3.5x2.5x3
-(46, 3.50, 5.00, 3,  3.0, NULL, true, NULL), -- 3525-3
-(47, 4.00, 2.30, 3,  4.5, NULL, true, NULL), -- GF 4023-3
-(48, 4.00, 2.40, 2,  3.5, NULL, true, NULL), -- GF 4024-2
-(49, 4.00, 4.50, 3,  4.5, NULL, true, NULL), -- GF 4045-3
-(50, 4.90, 3.40, 3,  6.0, NULL, true, NULL), -- GF 4934-3
-(51, 4.90, 4.35, 3,  6.0, NULL, true, NULL), -- BB 4943.5
-(52, 5.00, 4.00, 3,  7.0, NULL, true, NULL), -- DAL Cyclone 5040
-(53, 5.00, 4.30, 3,  7.0, NULL, true, NULL), -- HQ 5x4.3x3 / Nazgul F5
-(54, 5.00, 4.50, 3,  7.0, NULL, true, NULL), -- GF 5045-3
-(55, 5.00, 4.60, 3,  7.0, NULL, true, NULL), -- DAL Cyclone 5046
-(56, 5.00, 4.70, 3,  7.0, NULL, true, NULL), -- DAL 5047-3
-(57, 5.00, 4.80, 3,  7.0, NULL, true, NULL), -- HQ 5x4.8x3
-(58, 5.00, 5.00, 3,  7.0, NULL, true, NULL), -- DAL Cyclone 5050
-(59, 5.10, 2.50, 3,  7.5, NULL, true, NULL), -- GEMFAN SL5125 3-blade
-(60, 5.10, 2.60, 2,  5.5, NULL, true, NULL), -- GEMFAN SL5126 2-blade
-(61, 5.10, 3.10, 3,  7.5, NULL, true, NULL), -- HQ 5.1x3.1x3 / HQ EthiX S3
-(62, 5.10, 3.60, 2,  5.5, NULL, true, NULL), -- GF 5136R 2-blade
-(63, 5.10, 3.60, 3,  7.5, NULL, true, NULL), -- HQ R36
-(64, 5.10, 3.80, 3,  7.5, NULL, true, NULL), -- HQ R38
-(65, 5.10, 4.10, 3,  7.5, NULL, true, NULL), -- HQ EthiX S4
-(66, 5.10, 4.30, 3,  7.5, NULL, true, NULL), -- GF 51433 / HQ MCK
-(67, 5.10, 4.70, 3,  7.5, NULL, true, NULL), -- GF 51466
-(68, 5.10, 4.80, 3,  7.5, NULL, true, NULL), -- DAL T5148.5
-(69, 5.10, 5.00, 3,  7.5, NULL, true, NULL), -- HQ EthiX S5 / GF 51499
-(70, 5.50, 4.00, 3,  9.0, NULL, true, NULL), -- HQ 5.5x4x3
-(71, 6.00, 3.20, 3, 11.0, NULL, true, NULL), -- GF 6032-3
-(72, 6.00, 4.50, 2,  8.0, NULL, true, NULL), -- GF 6045-2
-(73, 6.00, 4.50, 3, 11.0, NULL, true, NULL), -- GF 6045-3
-(74, 7.00, 3.50, 3, 15.0, NULL, true, NULL), -- HQ 7x3.5x3
-(75, 7.00, 4.00, 2, 10.0, NULL, true, NULL), -- GF 7040-2
-(76, 7.00, 4.00, 3, 15.0, NULL, true, NULL), -- HQ 7x4x3
-(77, 7.00, 4.20, 2, 10.0, NULL, true, NULL), -- Gemfan 7042-2
-(78, 8.00, 4.00, 3, 20.0, NULL, true, NULL), -- HQ 8x4x3
-(79, 9.00, 4.00, 3, 25.0, NULL, true, NULL), -- HQ 9x4x3
-(80, 9.00, 4.50, 2, 18.0, NULL, true, NULL), -- Hoprop MQ9x4.5
-(81, 9.00, 5.00, 3, 25.0, NULL, true, NULL), -- HQ 9x5x3
-(82, 10.0, 4.50, 3, 30.0, NULL, true, NULL), -- HQ 10x4.5x3
-(83, 10.0, 5.00, 2, 22.0, NULL, true, NULL), -- Hoprop MQ10x5
-(84, 10.0, 5.00, 3, 30.0, NULL, true, NULL), -- HQ 10x5x3
-(85, 10.5, 5.00, 3, 32.0, NULL, true, NULL), -- HQ/GF 1050-3
-(86, 12.0, 4.80, 3, 45.0, NULL, true, NULL), -- RC 1248-3
-(87, 13.0, 8.00, 3, 55.0, NULL, true, NULL), -- GF 1308-3
-(88, 13.0, 9.00, 3, 55.0, NULL, true, NULL), -- HQ 1309-3
-(89, 15.0, 7.00, 3, 68.0, NULL, true, NULL), -- GF/HQ 1507-3
-(90, 5.10, 2.00, 3,  7.5, NULL, true, NULL), -- EMAX AVAN 5120 3-blade
-(91, 4.00, 2.50, 2,  3.5, NULL, true, NULL), -- HQ T4025 2-blade
-(92, 3.00, 3.00, 2,  2.0, NULL, true, NULL), -- HQ T3x3x3 2-blade
-(93, 4.50, 2.50, 3,  5.5, NULL, true, NULL), -- GEMFAN SL4525 3-blade
-(94, 4.00, 3.50, 3,  4.5, NULL, true, NULL); -- GF F4 freestyle
+(1,  1.22, 0.90, 3,  0.3, 0, true, NULL), -- Gemfan 1219-3 31mm
+(2,  1.57, 0.90, 4,  0.5, 0, true, NULL), -- Happymodel 40mm 4-blade
+(3,  1.60, 0.80, 3,  0.4, 0, true, NULL), -- GF 1608-3
+(4,  1.60, 0.90, 4,  0.5, 0, true, NULL), -- GF 1609-4
+(5,  1.60, 1.00, 2,  0.3, 0, true, NULL), -- Gemfan 1610-2
+(6,  1.60, 3.50, 3,  0.4, 0, true, NULL), -- GF 1635-3
+(7,  1.60, 3.50, 4,  0.5, 0, true, NULL), -- GF 1635-4
+(8,  1.77, 1.50, 2,  0.5, 0, true, NULL), -- GF 45mm-2
+(9,  1.77, 1.50, 3,  0.7, 0, true, NULL), -- GF 45mm-3
+(10, 2.00, 1.50, 2,  0.8, 0, true, NULL), -- GF 2015-2
+(11, 2.00, 2.00, 3,  1.0, 0, true, NULL), -- HQ T2x2x3
+(12, 2.00, 2.00, 4,  1.2, 0, true, NULL), -- GF 2020-4
+(13, 2.00, 2.00, 5,  1.5, 0, true, NULL), -- Gemfan 2020-D51MM-5
+(14, 2.00, 2.30, 3,  1.0, 0, true, NULL), -- GF 2023-3
+(15, 2.00, 2.35, 2,  0.8, 0, true, NULL), -- Qianfeng 20235
+(16, 2.00, 2.50, 3,  1.0, 0, true, NULL), -- HQ 2x2.5x3
+(17, 2.00, 3.50, 3,  1.0, 0, true, NULL), -- DAL 2x3.5x3
+(18, 2.00, 4.00, 3,  1.0, 0, true, NULL), -- GF 2040-3
+(19, 2.17, 1.50, 2,  1.0, 0, true, NULL), -- 55mm 2-blade
+(20, 2.20, 1.60, 3,  1.1, 0, true, NULL), -- HQ T2.2x1.6x3
+(21, 2.20, 1.90, 3,  1.1, 0, true, NULL), -- Gemfan 2219-3
+(22, 2.48, 2.00, 2,  1.2, 0, true, NULL), -- GF D63 2-blade
+(23, 2.48, 2.00, 3,  1.5, 0, true, NULL), -- GF D63 3-blade
+(24, 2.48, 2.00, 5,  2.0, 0, true, NULL), -- GF D63 5-blade
+(25, 2.50, 1.20, 3,  1.5, 0, true, NULL), -- Qianfeng 2512-3
+(26, 2.50, 2.60, 2,  1.2, 0, true, NULL), -- GF 5126-2
+(27, 2.50, 2.50, 3,  1.5, 0, true, NULL), -- GF 5125-3
+(28, 2.50, 4.00, 3,  1.5, 0, true, NULL), -- GF 2540-3
+(29, 2.56, 2.00, 2,  1.2, 0, true, NULL), -- GF 65R 2-blade
+(30, 2.56, 2.00, 3,  1.5, 0, true, NULL), -- HQ T6SR 3-blade
+(31, 2.90, 2.70, 3,  2.0, 0, true, NULL), -- HQ TD2.9x2.7x3
+(32, 2.99, 2.00, 3,  2.0, 0, true, NULL), -- HQ T76-3
+(33, 2.99, 2.00, 4,  2.5, 0, true, NULL), -- HQ DT76-4B
+(34, 3.00, 1.60, 3,  2.5, 0, true, NULL), -- GF 3016-3
+(35, 3.00, 1.80, 2,  2.0, 0, true, NULL), -- GF 3018-2
+(36, 3.00, 1.80, 3,  2.5, 0, true, NULL), -- DAL 3018-3
+(37, 3.00, 2.00, 2,  2.0, 0, true, NULL), -- HQ 3x2x2
+(38, 3.00, 2.80, 3,  2.5, 0, true, NULL), -- GF 3028-3
+(39, 3.00, 3.00, 3,  2.5, 0, true, NULL), -- HQ T3x3x3 3-blade
+(40, 3.00, 3.50, 3,  2.5, 0, true, NULL), -- GF 3035-3
+(41, 3.00, 4.00, 3,  2.5, 0, true, NULL), -- HQ 3x4x3
+(42, 3.00, 5.60, 3,  2.5, 0, true, NULL), -- GF 3056-3
+(43, 3.54, 2.50, 3,  3.0, 0, true, NULL), -- GF D90-3
+(44, 3.50, 2.00, 3,  3.0, 0, true, NULL), -- GF 3520-3
+(45, 3.50, 2.50, 3,  3.0, 0, true, NULL), -- HQ T3.5x2.5x3
+(46, 3.50, 5.00, 3,  3.0, 0, true, NULL), -- 3525-3
+(47, 4.00, 2.30, 3,  4.5, 0, true, NULL), -- GF 4023-3
+(48, 4.00, 2.40, 2,  3.5, 0, true, NULL), -- GF 4024-2
+(49, 4.00, 4.50, 3,  4.5, 0, true, NULL), -- GF 4045-3
+(50, 4.90, 3.40, 3,  6.0, 0, true, NULL), -- GF 4934-3
+(51, 4.90, 4.35, 3,  6.0, 0, true, NULL), -- BB 4943.5
+(52, 5.00, 4.00, 3,  7.0, 0, true, NULL), -- DAL Cyclone 5040
+(53, 5.00, 4.30, 3,  7.0, 0, true, NULL), -- HQ 5x4.3x3 / Nazgul F5
+(54, 5.00, 4.50, 3,  7.0, 0, true, NULL), -- GF 5045-3
+(55, 5.00, 4.60, 3,  7.0, 0, true, NULL), -- DAL Cyclone 5046
+(56, 5.00, 4.70, 3,  7.0, 0, true, NULL), -- DAL 5047-3
+(57, 5.00, 4.80, 3,  7.0, 0, true, NULL), -- HQ 5x4.8x3
+(58, 5.00, 5.00, 3,  7.0, 0, true, NULL), -- DAL Cyclone 5050
+(59, 5.10, 2.50, 3,  7.5, 0, true, NULL), -- GEMFAN SL5125 3-blade
+(60, 5.10, 2.60, 2,  5.5, 0, true, NULL), -- GEMFAN SL5126 2-blade
+(61, 5.10, 3.10, 3,  7.5, 0, true, NULL), -- HQ 5.1x3.1x3 / HQ EthiX S3
+(62, 5.10, 3.60, 2,  5.5, 0, true, NULL), -- GF 5136R 2-blade
+(63, 5.10, 3.60, 3,  7.5, 0, true, NULL), -- HQ R36
+(64, 5.10, 3.80, 3,  7.5, 0, true, NULL), -- HQ R38
+(65, 5.10, 4.10, 3,  7.5, 0, true, NULL), -- HQ EthiX S4
+(66, 5.10, 4.30, 3,  7.5, 0, true, NULL), -- GF 51433 / HQ MCK
+(67, 5.10, 4.70, 3,  7.5, 0, true, NULL), -- GF 51466
+(68, 5.10, 4.80, 3,  7.5, 0, true, NULL), -- DAL T5148.5
+(69, 5.10, 5.00, 3,  7.5, 0, true, NULL), -- HQ EthiX S5 / GF 51499
+(70, 5.50, 4.00, 3,  9.0, 0, true, NULL), -- HQ 5.5x4x3
+(71, 6.00, 3.20, 3, 11.0, 0, true, NULL), -- GF 6032-3
+(72, 6.00, 4.50, 2,  8.0, 0, true, NULL), -- GF 6045-2
+(73, 6.00, 4.50, 3, 11.0, 0, true, NULL), -- GF 6045-3
+(74, 7.00, 3.50, 3, 15.0, 0, true, NULL), -- HQ 7x3.5x3
+(75, 7.00, 4.00, 2, 10.0, 0, true, NULL), -- GF 7040-2
+(76, 7.00, 4.00, 3, 15.0, 0, true, NULL), -- HQ 7x4x3
+(77, 7.00, 4.20, 2, 10.0, 0, true, NULL), -- Gemfan 7042-2
+(78, 8.00, 4.00, 3, 20.0, 0, true, NULL), -- HQ 8x4x3
+(79, 9.00, 4.00, 3, 25.0, 0, true, NULL), -- HQ 9x4x3
+(80, 9.00, 4.50, 2, 18.0, 0, true, NULL), -- Hoprop MQ9x4.5
+(81, 9.00, 5.00, 3, 25.0, 0, true, NULL), -- HQ 9x5x3
+(82, 10.0, 4.50, 3, 30.0, 0, true, NULL), -- HQ 10x4.5x3
+(83, 10.0, 5.00, 2, 22.0, 0, true, NULL), -- Hoprop MQ10x5
+(84, 10.0, 5.00, 3, 30.0, 0, true, NULL), -- HQ 10x5x3
+(85, 10.5, 5.00, 3, 32.0, 0, true, NULL), -- HQ/GF 1050-3
+(86, 12.0, 4.80, 3, 45.0, 0, true, NULL), -- RC 1248-3
+(87, 13.0, 8.00, 3, 55.0, 0, true, NULL), -- GF 1308-3
+(88, 13.0, 9.00, 3, 55.0, 0, true, NULL), -- HQ 1309-3
+(89, 15.0, 7.00, 3, 68.0, 0, true, NULL), -- GF/HQ 1507-3
+(90, 5.10, 2.00, 3,  7.5, 0, true, NULL), -- EMAX AVAN 5120 3-blade
+(91, 4.00, 2.50, 2,  3.5, 0, true, NULL), -- HQ T4025 2-blade
+(92, 3.00, 3.00, 2,  2.0, 0, true, NULL), -- HQ T3x3x3 2-blade
+(93, 4.50, 2.50, 3,  5.5, 0, true, NULL), -- GEMFAN SL4525 3-blade
+(94, 4.00, 3.50, 3,  4.5, 0, true, NULL); -- GF F4 freestyle
 
 
 
@@ -509,7 +509,7 @@ INSERT INTO servo (id, name, torque, gear_type, size_category, idle_current, no_
 -- Receivers
 -- power_consumption in mA
 INSERT INTO receiver (id, weight, power_consumption) VALUES
-(1, 8.5, 45.0),
+(1, 8.5, 45.0);
 
 
 
