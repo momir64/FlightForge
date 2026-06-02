@@ -169,56 +169,23 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (1,   33, 34, 4,  474.0, 15.2),  -- AOS Supernova 1404 / GF 3016-3 / 4S
 (2,   33, 31, 4,  473.0, 20.9),  -- AOS Supernova 1404 / HQ TD2.9x2.7x3 / 4S
 (3,   33, 48, 3,  454.0, 17.4),  -- AOS Supernova 1404 / GF 4024-2 / 3S
-(4,   12, 62, 5, 2184.0, 49.6),  -- AOS Supernova 2207 / GF 5136R / 5S
-(5,   12, 62, 6, 2521.0, 59.4),  -- AOS Supernova 2207 / GF 5136R / 6S
-(6,   12, 67, 5, 2278.0, 51.0),  -- AOS Supernova 2207 / GF 51466 / 5S
-(7,   12, 67, 6, 2547.0, 60.7),  -- AOS Supernova 2207 / GF 51466 / 6S
-(8,   12, 63, 5, 2025.0, 44.7),  -- AOS Supernova 2207 / HQ R36 / 5S
-(9,   12, 63, 6, 2236.0, 54.4),  -- AOS Supernova 2207 / HQ R36 / 6S
-(10,  12, 64, 5, 1941.0, 47.2),  -- AOS Supernova 2207 / HQ R38 / 5S
-(11,  12, 64, 6, 2279.0, 57.7),  -- AOS Supernova 2207 / HQ R38 / 6S
-(12,  12, 68, 5, 1967.0, 43.9),  -- AOS Supernova 2207 / DAL T5148.5 / 5S
-(13,  12, 68, 6, 2311.0, 54.3),  -- AOS Supernova 2207 / DAL T5148.5 / 6S
-(14,  31, 51, 6, 1646.6, 36.78), -- Axisflying AE2207 / BB 4943.5 / 6S
-(15,  31, 67, 6, 1702.7, 38.65), -- Axisflying AE2207 / GF 51466 / 6S
 (16,  41, 22, 4,  255.2, 16.07), -- Axisflying C155 / GF D63 2-blade / 4S
 (17,  41, 22, 3,  255.9, 14.21), -- Axisflying C155 / GF D63 2-blade / 3S
 (18,  41, 22, 3,  189.8, 13.54), -- Axisflying C155 / GF D63 2-blade / 3S
 (19,  41, 45, 3,  326.2, 18.63), -- Axisflying C155 / HQ T3.5x2.5x3 / 3S
 (20,  51, 23, 3,  234.0, 10.20), -- BetaFPV LAVA 1104 / GF D63 3-blade / 3S
 (21,  34, 23, 4,  497.0, 19.59), -- BetaFPV Lava 1506 / GF D63 3-blade / 4S
-(22,  18, 74, 6, 2520.0, 44.4),  -- BrotherHobby Avenger 2806.5 / HQ 7x3.5x3 / 6S
-(23,  14, 76, 6, 2193.0, 36.0),  -- BrotherHobby Avenger 2810 / HQ 7x4x3 / 6S
-(24,  11, 81, 6, 3307.0, 66.8),  -- BrotherHobby Avenger 2812 / HQ 9x5x3 / 6S
-(25,   7, 84, 6, 3523.0, 55.0),  -- BrotherHobby Avenger 2816 / HQ 10x5x3 / 6S
 (26,  26, 41, 4,  530.0, 23.1),  -- BrotherHobby LA 2005 3450Kv / HQ 3x4x3 / 4S
 (27,  27, 41, 4,  530.0, 23.1),  -- BrotherHobby LA 2005 2450Kv / HQ 3x4x3 / 4S
-(28,  22, 76, 6, 2640.0, 42.6),  -- BrotherHobby SE 2812 / HQ 7x4x3 / 6S
 (29,  38, 34, 4,  454.0, 13.2),  -- BrotherHobby VY 1504.5 / GF 3016-3 / 4S
-(30,  30, 66, 6,  762.0, 13.5),  -- BrotherHobby VY 1507 / GF 51433 / 6S
 (31,  53, 15, 3,  210.0,  9.4),  -- DarwinFPV Bling / Qianfeng 20235 / 3S
 (32,  53, 25, 3,  259.0, 10.0),  -- DarwinFPV Bling / Qianfeng 2512-3 / 3S
 (33,  46, 22, 4,  443.6, 15.7),  -- DeepSpace Aether 1505 / GF D63 2-blade / 4S
 (34,  46, 39, 4,  553.6, 20.1),  -- DeepSpace Aether 1505 / HQ T3x3x3 3-blade / 4S
-(35,  21, 66, 6, 1649.8, 23.1),  -- DeepSpace Aether 2207.3 / GF 51433 / 6S
-(36,  21, 67, 6, 1806.3, 42.4),  -- DeepSpace Aether 2207.3 / GF 51466 / 6S
-(37,  25, 52, 6, 1500.0, 23.5),  -- Emax Eco II 2306 / DAL Cyclone 5040 / 6S
-(38,  25, 58, 6, 1710.0, 34.8),  -- Emax Eco II 2306 / DAL Cyclone 5050 / 6S
-(39,  25, 55, 6, 1690.0, 30.5),  -- Emax Eco II 2306 / DAL Cyclone 5046 / 6S
-(40,  25, 70, 6, 1850.0, 31.8),  -- Emax Eco II 2306 / HQ 5.5x4x3 / 6S
-(41,  25, 53, 6, 1670.0, 26.8),  -- Emax Eco II 2306 / HQ 5x4.3x3 / 6S
-(42,  25, 57, 6, 1680.0, 29.4),  -- Emax Eco II 2306 / HQ 5x4.8x3 / 6S
-(43,  25, 54, 6, 1570.0, 27.1),  -- Emax Eco II 2306 / GF 5045-3 / 6S
-(44,  24, 77, 6, 2190.0, 47.9),  -- Emax Eco II 2807 1300Kv / Gemfan 7042-2 / 6S
-(45,  24, 76, 6, 2490.0, 45.2),  -- Emax Eco II 2807 1300Kv / Gemfan 7040-3 / 6S
-(46,  24, 74, 6, 2580.0, 47.1),  -- Emax Eco II 2807 1300Kv / HQ 7x3.5x3 / 6S
-(47,  24, 76, 6, 2640.0, 51.2),  -- Emax Eco II 2807 1300Kv / HQ 7x4x3 / 6S
 (48,  32, 77, 4, 1810.0, 46.2),  -- Emax Eco II 2807 1700Kv / Gemfan 7042-2 / 4S
 (49,  32, 76, 4, 1990.0, 43.7),  -- Emax Eco II 2807 1700Kv / Gemfan 7040-3 / 4S
 (50,  32, 74, 4, 2060.0, 47.1),  -- Emax Eco II 2807 1700Kv / HQ 7x3.5x3 / 4S
 (51,  32, 76, 4, 2100.0, 51.2),  -- Emax Eco II 2807 1700Kv / HQ 7x4x3 / 4S
-(52,  36, 56, 6, 1713.0, 40.65), -- Flashhobby 2207.5 / DAL 5047-3 / 6S
-(53,  36, 72, 6, 1959.0, 45.38), -- Flashhobby 2207.5 / GF 6045-2 / 6S
 (54,  59, 18, 3,  195.0,  8.65), -- Flashhobby A1207 / GF 2040-3 / 3S
 (55,  59, 28, 3,  320.0, 14.80), -- Flashhobby A1207 / GF 2540-3 / 3S
 (56,  59, 40, 3,  383.0, 17.39), -- Flashhobby A1207 / GF 3035-3 / 3S
@@ -226,24 +193,12 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (58,  56, 38, 4,  461.0, 13.56), -- Flashhobby A1408 / GF 3028-3 / 4S
 (59,  56, 38, 4,  486.0, 14.59), -- Flashhobby A1408 / GF 3056-3 / 4S
 (60,  56, 49, 4,  650.0, 22.39), -- Flashhobby A1408 / GF 4045-3 / 4S
-(61,   3, 87, 8, 4744.0, 37.62), -- Flashhobby A5215 350Kv / GF 1308-3 / 8S
-(62,   3, 88, 8, 5654.0, 53.27), -- Flashhobby A5215 350Kv / HQ 1309-3 / 8S
-(63,   3, 89, 8, 7074.0, 67.93), -- Flashhobby A5215 350Kv / GF 1507-3 / 8S
-(64,   3, 89, 8, 7564.0, 68.88), -- Flashhobby A5215 350Kv / HQ 1507-3 / 8S
-(65,   4, 87, 6, 5215.0, 98.62), -- Flashhobby A5215 500Kv / GF 1308-3 / 6S
-(66,   4, 88, 6, 6005.0, 84.90), -- Flashhobby A5215 500Kv / HQ 1309-3 / 6S
-(67,   4, 89, 6, 7077.0, 62.32), -- Flashhobby A5215 500Kv / GF 1507-3 / 6S
-(68,   4, 89, 6, 7148.0, 98.62), -- Flashhobby A5215 500Kv / HQ 1507-3 / 6S
 (69,  57, 18, 2,  117.0,  7.97), -- Flashhobby K1303 / GF 2040 / 2S
 (70,  57, 28, 2,  170.0, 12.03), -- Flashhobby K1303 / GF 2540 / 2S
 (71,  57, 18, 3,  203.0, 13.92), -- Flashhobby K1303 / GF 2040 / 3S
 (72,  57, 28, 3,  236.0, 17.84), -- Flashhobby K1303 / GF 2540 / 3S
 (73,  44, 37, 4,  297.8, 12.0),  -- FlyfishRC Flash / HQ 3x2x2 / 4S
 (74,  44, 28, 4,  275.3, 11.21), -- FlyfishRC Flash / GF 2540-3 / 4S
-(75,  19, 77, 6, 2318.0, 28.43), -- GEPRC EM2812 / Gemfan 8040-2 / 6S
-(76,  19, 80, 6, 2710.0, 36.26), -- GEPRC EM2812 / Hoprop MQ9x4.5 / 6S
-(77,  13, 80, 6, 3190.0, 43.2),  -- GEPRC EM3115 / Hoprop MQ9x4.5 / 6S
-(78,  13, 83, 6, 4032.0, 66.71), -- GEPRC EM3115 / Hoprop MQ10x5 / 6S
 (79,  54,  5, 1,   80.0,  8.9),  -- GEPRC SpeedX2 1002 / Gemfan 1610-2 / 1S
 (80,  54,  6, 1,   83.0, 10.6),  -- GEPRC SpeedX2 1002 / GF 1635-3 / 1S
 (81,  54,  7, 1,   87.0, 11.7),  -- GEPRC SpeedX2 1002 / GF 1635-4 / 1S
@@ -262,8 +217,6 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (94,  55, 30, 2,  215.0, 11.3),  -- GEPRC SpeedX2 1202.5 / HQ T6SR / 2S
 (95,  40, 22, 4,  314.0, 17.16), -- GEPRC SpeedX2 1505 / GF D63 2-blade / 4S
 (96,  40, 45, 4,  450.0, 21.56), -- GEPRC SpeedX2 1505 / HQ T3.5x2.5x3 / 4S
-(97,  37, 61, 6, 1412.0, 42.06), -- GEPRC SpeedX2 2207E / HQ 5.1x3.1x3 / 6S
-(98,  37, 67, 6, 1263.0, 35.46), -- GEPRC SpeedX2 2207E / GF 51466 / 6S
 (99,  61,  1, 1,   21.5,  2.62), -- Happymodel EX0802 / Gemfan 1219-3 / 1S
 (100, 61,  2, 1,   29.3,  4.09), -- Happymodel EX0802 / Happymodel 40mm 4-blade / 1S
 (101, 60,  5, 1,   34.8,  3.74), -- Happymodel RS0802 / Gemfan 1610-2 / 1S
@@ -271,18 +224,6 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (103,  1,  3, 1,   24.6,  3.42), -- Happymodel SE0802 / GF 1608-3 / 1S
 (104,  1,  1, 1,   26.7,  4.34), -- Happymodel SE0802 / Gemfan 1219-3 / 1S
 (105,  1,  2, 1,   25.2,  4.53), -- Happymodel SE0802 / Happymodel 40mm 4-blade / 1S
-(106, 29, 61, 6, 1485.0, 17.1),  -- RCinpower Bison 22.5-7 / HQ EthiX S3 / 6S
-(107, 29, 61, 6, 1530.0, 18.5),  -- RCinpower Bison 22.5-7 / HQ EthiX S4 / 6S
-(108, 29, 69, 6, 1589.0, 21.5),  -- RCinpower Bison 22.5-7 / HQ EthiX S5 / 6S
-(109, 29, 53, 6, 1433.0, 18.4),  -- RCinpower Bison 22.5-7 / DAL Fold F5 / 6S
-(110, 29, 68, 6, 1580.0, 18.2),  -- RCinpower Bison 22.5-7 / DAL 5147.5 / 6S
-(111, 29, 61, 6, 1621.0, 19.3),  -- RCinpower Bison 22.5-7 / HQ 5.1x3.1x3 / 6S
-(112, 29, 72, 6, 1835.0, 23.5),  -- RCinpower Bison 22.5-7 / GF 6045-2 / 6S
-(113,  8, 85, 6, 4128.0, 69.2),  -- RCinpower Bison 3220 / HQ/GF 1050-3 / 6S
-(114,  8, 85, 6, 4136.0, 66.0),  -- RCinpower Bison 3220 / HQ/GF 1050-3 / 6S
-(115,  9, 87, 6, 6356.0, 87.1),  -- RCinpower EX4214 / GF 1308-3 / 6S
-(116,  9, 88, 6, 6400.0, 85.8),  -- RCinpower EX4214 / HQ 1309-3 / 6S
-(117,  9, 86, 6, 6531.0, 90.2),  -- RCinpower EX4214 / RC 1248-3 / 6S
 (118, 45, 16, 3,  224.0,  6.84), -- RCinpower GTS V2 1207 / HQ 2x2.5x3 / 3S
 (119, 45, 16, 4,  346.0,  9.9),  -- RCinpower GTS V2 1207 / HQ 2x2.5x3 / 4S
 (120, 45, 17, 3,  228.0,  6.85), -- RCinpower GTS V2 1207 / DAL 2x3.5x3 / 3S
@@ -318,38 +259,6 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (150, 23, 48, 4,  763.0, 19.3),  -- RCinpower GTS V3 1804 / GF 4024-2 / 4S
 (151, 23, 47, 3,  529.0, 14.9),  -- RCinpower GTS V3 1804 / GF 4023-3 / 3S
 (152, 23, 47, 4,  772.0, 24.0),  -- RCinpower GTS V3 1804 / GF 4023-3 / 4S
-(153, 15, 62, 5, 1948.0, 44.2),  -- RCinpower GTS V4 2207 / GF 5136R / 5S
-(154, 15, 62, 6, 2248.0, 53.0),  -- RCinpower GTS V4 2207 / GF 5136R / 6S
-(155, 15, 67, 5, 1978.0, 45.2),  -- RCinpower GTS V4 2207 / GF 51466 / 5S
-(156, 15, 67, 6, 2281.0, 53.9),  -- RCinpower GTS V4 2207 / GF 51466 / 6S
-(157, 15, 63, 5, 1805.0, 40.2),  -- RCinpower GTS V4 2207 / HQ R36 / 5S
-(158, 15, 63, 6, 1994.0, 48.4),  -- RCinpower GTS V4 2207 / HQ R36 / 6S
-(159, 15, 64, 5, 1731.0, 41.9),  -- RCinpower GTS V4 2207 / HQ R38 / 5S
-(160, 15, 64, 6, 2032.0, 51.3),  -- RCinpower GTS V4 2207 / HQ R38 / 6S
-(161, 15, 68, 5, 1754.0, 38.7),  -- RCinpower GTS V4 2207 / DAL T5148.5 / 5S
-(162, 15, 68, 6, 2060.0, 48.1),  -- RCinpower GTS V4 2207 / DAL T5148.5 / 6S
-(163, 17, 50, 5, 1539.0, 42.3),  -- RCinpower Wasp Major 1980Kv / GF 4934-3 / 5S
-(164, 17, 50, 6, 1759.0, 48.4),  -- RCinpower Wasp Major 1980Kv / GF 4934-3 / 6S
-(165, 17, 94, 5, 1717.0, 47.0),  -- RCinpower Wasp Major 1980Kv / GF F4 freestyle / 5S
-(166, 17, 94, 6, 1963.0, 53.7),  -- RCinpower Wasp Major 1980Kv / GF F4 freestyle / 6S
-(167, 17, 67, 5, 1645.0, 47.5),  -- RCinpower Wasp Major 1980Kv / GF 51466V2 / 5S
-(168, 17, 67, 6, 1879.0, 54.3),  -- RCinpower Wasp Major 1980Kv / GF 51466V2 / 6S
-(169, 17, 71, 5, 1968.0, 48.7),  -- RCinpower Wasp Major 1980Kv / GF 6032-3 / 5S
-(170, 17, 71, 6, 2250.0, 55.7),  -- RCinpower Wasp Major 1980Kv / GF 6032-3 / 6S
-(171, 17, 66, 5, 1679.0, 41.7),  -- RCinpower Wasp Major 1980Kv / HQ MCK / 5S
-(172, 17, 66, 6, 1919.0, 47.7),  -- RCinpower Wasp Major 1980Kv / HQ MCK / 6S
-(173, 16, 50, 5, 1626.0, 44.6),  -- RCinpower Wasp Major 2100Kv / GF 4934-3 / 5S
-(174, 16, 50, 6, 1858.0, 51.1),  -- RCinpower Wasp Major 2100Kv / GF 4934-3 / 6S
-(175, 16, 94, 5, 1814.0, 49.7),  -- RCinpower Wasp Major 2100Kv / GF F4 freestyle / 5S
-(176, 16, 94, 6, 2073.0, 56.7),  -- RCinpower Wasp Major 2100Kv / GF F4 freestyle / 6S
-(177, 16, 67, 5, 1737.0, 50.2),  -- RCinpower Wasp Major 2100Kv / GF 51466V2 / 5S
-(178, 16, 67, 6, 1985.0, 57.4),  -- RCinpower Wasp Major 2100Kv / GF 51466V2 / 6S
-(179, 16, 69, 5, 1888.0, 55.9),  -- RCinpower Wasp Major 2100Kv / GF 51499 / 5S
-(180, 16, 69, 6, 2158.0, 63.8),  -- RCinpower Wasp Major 2100Kv / GF 51499 / 6S
-(181, 16, 66, 5, 1773.0, 44.1),  -- RCinpower Wasp Major 2100Kv / HQ MCK / 5S
-(182, 16, 66, 6, 2027.0, 50.4),  -- RCinpower Wasp Major 2100Kv / HQ MCK / 6S
-(183,  5, 88, 6, 3211.0, 53.5),  -- Readytosky 4320 / HQ 1309-3 / 6S
-(184,  5, 88, 8, 5346.0, 43.7),  -- Readytosky 4320 / HQ 1309-3 / 8S
 (185, 39, 32, 3,  406.0, 15.9),  -- Sub250 1804 / HQ T76-3 / 3S
 (186, 39, 32, 4,  534.0, 25.0),  -- Sub250 1804 / HQ T76-3 / 4S
 (187, 39, 43, 3,  499.0, 17.6),  -- Sub250 1804 / GF D90-3 / 3S
@@ -361,37 +270,18 @@ INSERT INTO motor_configuration (id, motor_id, propeller_id, cell_count, thrust,
 (193, 39, 60, 3,  526.0, 26.3),  -- Sub250 1804 / GF 5126-2 / 3S
 (194, 39, 59, 4,  683.0, 27.1),  -- Sub250 1804 / GEMFAN SL5125 / 4S
 (195, 28, 27, 4,  433.0, 12.44), -- iFlight XING 1504 / GF 5125-3 / 4S
-(196, 10, 78, 6, 2933.0, 49.23), -- iFlight XING-E 2809 / HQ 8x4x3 / 6S
-(197, 10, 75, 6, 2092.0, 30.36), -- iFlight XING-E 2809 / GF 7040-2 / 6S
-(198,  6, 78, 6, 2355.0, 30.28), -- iFlight XING-E 3314 / HQ 8x4x3 / 6S
-(199,  6, 79, 6, 3213.0, 41.44), -- iFlight XING-E 3314 / HQ 9x4x3 / 6S
-(200,  6, 82, 6, 4191.0, 58.48), -- iFlight XING-E 3314 / HQ 10x4.5x3 / 6S
-(201,  2, 88, 8, 7500.0, 106.49),-- iFlight XING-E 5215 / HQ 1309-3 / 8S
 (202, 42, 58, 4, 1498.0, 39.56), -- iFlight XING-E Pro 2207 / DAL Cyclone 5050 / 4S
 (203, 42, 61, 4, 1391.0, 35.68), -- iFlight XING-E Pro 2207 / HQ 5.1x3.1x3 / 4S
 (204, 42, 54, 4, 1465.0, 32.02), -- iFlight XING-E Pro 2207 / GF 5045-3 / 4S
 (205, 42, 53, 4, 1398.0, 35.48), -- iFlight XING-E Pro 2207 / HQ 5x4.3x3 / 4S
 (206, 42, 73, 4, 1679.0, 42.63), -- iFlight XING-E Pro 2207 / GF 6045-3 / 4S
-(207, 20, 53, 6, 1678.0, 35.46), -- iFlight XING2 2207 / Nazgul F5 / 6S
-(208, 20, 67, 6, 1703.0, 36.03), -- iFlight XING2 2207 / GF 51466 / 6S
 (209, 48, 90, 4,  864.0, 21.8),  -- Emax Eco II 2004 2400Kv / EMAX AVAN 5120 / 4S
 (210, 48, 59, 4,  850.0, 19.2),  -- Emax Eco II 2004 2400Kv / GEMFAN SL5125 / 4S
 (211, 48, 60, 4,  825.0, 18.8),  -- Emax Eco II 2004 2400Kv / GEMFAN SL5126 / 4S
-(212, 48, 91, 6,  827.0, 16.1),  -- Emax Eco II 2004 2400Kv / HQ T4025 / 6S
-(213, 48, 47, 6,  930.0, 18.8),  -- Emax Eco II 2004 2400Kv / GF 4023-3 / 6S
-(214, 47, 92, 6,  561.0, 12.7),  -- Emax Eco II 2004 3000Kv / HQ T3x3x3 2-blade / 6S
-(215, 47, 44, 6,  636.0, 12.4),  -- Emax Eco II 2004 3000Kv / GF 3520-3 / 6S
 (216, 47, 90, 4, 1170.0, 31.6),  -- Emax Eco II 2004 3000Kv / EMAX AVAN 5120 / 4S
 (217, 47, 59, 4, 1090.0, 30.2),  -- Emax Eco II 2004 3000Kv / GEMFAN SL5125 / 4S
-(218, 49, 93, 6,  695.0, 10.5),  -- Emax Eco II 2004 1600Kv / GEMFAN SL4525 / 6S
-(219, 49, 90, 6,  951.0, 15.2),  -- Emax Eco II 2004 1600Kv / EMAX AVAN 5120 / 6S
-(220, 49, 59, 6,  935.0, 14.1),  -- Emax Eco II 2004 1600Kv / GEMFAN SL5125 / 6S
-(221, 49, 60, 6,  915.0, 13.5),  -- Emax Eco II 2004 1600Kv / GEMFAN SL5126 / 6S
 (222, 50, 90, 4,  715.0, 14.0),  -- Emax Eco II 2004 2000Kv / EMAX AVAN 5120 / 4S
-(223, 50, 59, 4,  670.0, 12.5),  -- Emax Eco II 2004 2000Kv / GEMFAN SL5125 / 4S
-(224, 50, 47, 6,  797.0, 13.4),  -- Emax Eco II 2004 2000Kv / GF 4023-3 / 6S
-(225, 50, 93, 6,  910.0, 17.0),  -- Emax Eco II 2004 2000Kv / GEMFAN SL4525 / 6S
-(226, 50, 59, 6, 1130.0, 21.5);  -- Emax Eco II 2004 2000Kv / GEMFAN SL5125 / 6S
+(223, 50, 59, 4,  670.0, 12.5);  -- Emax Eco II 2004 2000Kv / GEMFAN SL5125 / 4S
 
 
 
