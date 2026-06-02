@@ -1,0 +1,82 @@
+package rules
+
+import rs.moma.flightforge.model.AirplaneSpecs;
+import rs.moma.flightforge.model.UserPreferences;
+import rs.moma.flightforge.model.Receiver;
+import rs.moma.flightforge.model.MotorConfiguration;
+import rs.moma.flightforge.model.ESC;
+import rs.moma.flightforge.model.Servo;
+import rs.moma.flightforge.model.Battery;
+import rs.moma.flightforge.model.BuildConfig;
+import rs.moma.flightforge.utils.BuildHelper;
+import rs.moma.flightforge.model.WeightHolder;
+import rs.moma.flightforge.model.GearType;
+
+global WeightHolder weightHolder;
+
+query findMotor(AirplaneSpecs $plane, UserPreferences $prefs, double $est, MotorConfiguration $mc)
+    $mc := MotorConfiguration(
+        motor.available == true,
+        propeller.available == true,
+        thrust / $est >= BuildHelper.minTW($plane, $prefs))
+end
+
+query findESC(MotorConfiguration $mc, ESC $esc)
+    $esc := ESC(
+        available == true,
+        continuousCurrent >= $mc.getMaxCurrent(),
+        minCellCount <= $mc.getCellCount(),
+        maxCellCount >= $mc.getCellCount())
+end
+
+query findServo(AirplaneSpecs $plane, UserPreferences $prefs, double $est, Servo $servo)
+    $servo := Servo(
+        available == true,
+        sizeCategory >= BuildHelper.requiredServoCategory($est),
+        !$prefs.isMetalGearsPreference() || gearType == GearType.METAL)
+end
+
+// Full battery check: cell count, discharge, and optional flight time
+query findBattery(MotorConfiguration $mc, AirplaneSpecs $plane, UserPreferences $prefs,
+                  Servo $servo, Receiver $receiver, Battery $bat)
+    $bat := Battery(
+        available == true,
+        cellCount == $mc.getCellCount(),
+        capacity * cRating / 1000.0 >= $mc.getMaxCurrent(),
+        $prefs.getMinFlightTime() == null
+            || (capacity / 1000.0) / BuildHelper.totalMaxConsumption($mc, BuildHelper.servosFor($plane, $servo), $receiver) * 60.0
+               >= $prefs.getMinFlightTime())
+end
+
+// Discharge-only battery check used in diagnostics to distinguish INCOMPATIBLE_BATTERY from INSUFFICIENT_CAPACITY
+query findBatteryDischargeOnly(MotorConfiguration $mc, Battery $bat)
+    $bat := Battery(
+        available == true,
+        cellCount == $mc.getCellCount(),
+        capacity * cRating / 1000.0 >= $mc.getMaxCurrent())
+end
+
+query validBuild(AirplaneSpecs $plane, UserPreferences $prefs, Receiver $receiver,
+                 MotorConfiguration $mc, ESC $esc, Servo $servo, Battery $bat)
+    Double($est : doubleValue) from new Double(BuildHelper.correctedDryWeight($plane, $prefs))
+    validBuildForWeight($plane, $prefs, $receiver, $est, $mc, $esc, $servo, $bat;)
+end
+
+query validBuildForWeight(AirplaneSpecs $plane, UserPreferences $prefs, Receiver $receiver,
+                          double $est, MotorConfiguration $mc, ESC $esc, Servo $servo, Battery $bat)
+    findMotor($plane, $prefs, $est, $mc;)
+    findESC($mc, $esc;)
+    findServo($plane, $prefs, $est, $servo;)
+    findBattery($mc, $plane, $prefs, $servo, $receiver, $bat;)
+    Double($actual : doubleValue) from new Double(
+        BuildHelper.allUpWeight($plane, $prefs, $mc, $esc, $bat, BuildHelper.servosFor($plane, $servo), $receiver)
+    )
+    eval(weightHolder.recordAndReturn($actual))
+    (
+        eval($mc.getThrust() / $actual >= BuildHelper.minTW($plane, $prefs))
+    ) or (
+        eval($mc.getThrust() / $actual < BuildHelper.minTW($plane, $prefs))
+        and eval($actual > $est)
+        and validBuildForWeight($plane, $prefs, $receiver, $actual, $mc, $esc, $servo, $bat;)
+    )
+end
