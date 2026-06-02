@@ -1,8 +1,7 @@
 package rs.moma.flightforge.service;
 
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import rs.moma.flightforge.service.repository.*;
+import rs.moma.flightforge.repository.*;
 import org.jspecify.annotations.NonNull;
 import lombok.RequiredArgsConstructor;
 import rs.moma.flightforge.model.*;
@@ -18,7 +17,7 @@ import java.util.List;
  * All components are loaded from the H2 database (data.sql).
  * Motor config 32: DarwinFPV Bling 1103 + Qianfeng 2512-3, 3S, 259g thrust, 10A max.
  */
-@Component
+//@Component
 @RequiredArgsConstructor
 public class DemoRunner implements CommandLineRunner {
     private final BuildEvaluationService evaluationService;

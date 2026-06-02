@@ -1,4 +1,4 @@
-package rs.moma.flightforge.service;
+package rs.moma.flightforge;
 
 import org.springframework.boot.persistence.autoconfigure.EntityScan;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

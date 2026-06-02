@@ -1,4 +1,4 @@
-package rs.moma.flightforge.service.repository;
+package rs.moma.flightforge.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import rs.moma.flightforge.model.GearType;
