@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -42,6 +42,7 @@ export class SetWeatherComponent {
   constructor(
     private dialogRef: MatDialogRef<SetWeatherComponent>,
     private forecastService: ForecastService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   onNumericInput(event: Event, allowNegative: boolean) {
@@ -68,7 +69,7 @@ export class SetWeatherComponent {
     };
     this.forecastService.insertForecastHour(hour).subscribe({
       next: () => this.dialogRef.close(true),
-      error: (e) => { this.error = e.error?.message || 'Failed to update forecast hour.'; },
+      error: (e) => { this.error = e.error?.message || 'Failed to update forecast hour.'; this.cdr.detectChanges(); },
     });
   }
 

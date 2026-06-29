@@ -15,14 +15,12 @@ import java.time.format.DateTimeFormatter;
 declare ForecastHour
     @role(event)
     @timestamp(timestamp)
-    @expires(25h)
 end
 
 declare ScheduledSession
     @role(event)
     @timestamp(startTimeMs)
     @duration(durationMillis)
-    @expires(24h)
 end
 
 declare CurrentTime

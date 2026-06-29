@@ -1,5 +1,6 @@
 package rs.moma.flightforge.controller;
 
+import rs.moma.flightforge.service.ForecastService;
 import org.springframework.web.bind.annotation.*;
 import rs.moma.flightforge.model.SessionRequest;
 import rs.moma.flightforge.service.CepService;
@@ -14,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SessionController {
     private final CepService cepService;
+    private final ForecastService forecastService;
 
     @PostMapping
     public void schedule(@RequestBody SessionRequest req) {
@@ -48,5 +50,6 @@ public class SessionController {
     @PostMapping("/clock")
     public void setClock(@RequestBody ClockRequest req) {
         cepService.setCurrentTime(req.getTime());
+        forecastService.refresh();
     }
 }

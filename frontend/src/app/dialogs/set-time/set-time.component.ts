@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -34,13 +34,15 @@ export class SetTimeComponent implements OnInit {
   constructor(
     private dialogRef: MatDialogRef<SetTimeComponent>,
     private forecastService: ForecastService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
     this.forecastService.getClock().subscribe({
       next: current => {
-        this.date = isoToDate(current as string);
-        this.time = isoToDisplayTime(current as string);
+        this.date = isoToDate(current);
+        this.time = isoToDisplayTime(current);
+        this.cdr.detectChanges();
       },
     });
   }
@@ -52,7 +54,7 @@ export class SetTimeComponent implements OnInit {
     this.error = null;
     this.forecastService.setClock(toIsoDateTime(this.date, this.time)).subscribe({
       next: () => this.dialogRef.close(true),
-      error: (e) => { this.error = e.error?.message || 'Failed to set demo clock.'; },
+      error: (e) => { this.error = e.error?.message || 'Failed to set demo clock.'; this.cdr.detectChanges(); },
     });
   }
 

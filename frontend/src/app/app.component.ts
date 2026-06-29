@@ -11,6 +11,7 @@ import { SettingsComponent } from './dialogs/settings/settings.component';
 import { SetTimeComponent } from './dialogs/set-time/set-time.component';
 import { SetWeatherComponent } from './dialogs/set-weather/set-weather.component';
 import { ComponentService } from './services/component.service';
+import { ForecastService } from './services/forecast.service';
 import { WebsocketService } from './services/websocket.service';
 
 @Component({
@@ -32,6 +33,7 @@ export class AppComponent implements OnInit {
 
   constructor(
     private componentService: ComponentService,
+    private forecastService: ForecastService,
     private websocketService: WebsocketService,
     private dialog: MatDialog,
   ) {}
@@ -60,10 +62,17 @@ export class AppComponent implements OnInit {
   }
 
   openSetTime() {
-    this.dialog.open(SetTimeComponent, { width: '380px' });
+    this.dialog.open(SetTimeComponent, { width: '380px' })
+      .afterClosed().subscribe(result => { if (result) this.reloadForecastData(); });
   }
 
   openSetWeather() {
-    this.dialog.open(SetWeatherComponent, { width: '420px' });
+    this.dialog.open(SetWeatherComponent, { width: '420px' })
+      .afterClosed().subscribe(result => { if (result) this.reloadForecastData(); });
+  }
+
+  private reloadForecastData() {
+    this.forecastService.loadForecast().subscribe();
+    this.forecastService.loadSessions().subscribe();
   }
 }

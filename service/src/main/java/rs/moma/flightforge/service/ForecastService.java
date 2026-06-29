@@ -75,10 +75,16 @@ public class ForecastService {
     }
 
     private List<ForecastHour> fetchForecast() throws Exception {
+        LocalDate apiLimit = LocalDate.now().plusDays(14);
+        LocalDate start = cepService.getCurrentTime().toLocalDate();
+        LocalDate end = start.plusDays(10);
+        if (start.isAfter(apiLimit)) return List.of();
+        if (end.isAfter(apiLimit)) end = apiLimit;
         String url = FORECAST_URL + "?latitude=" + latitude + "&longitude=" + longitude
                      + "&hourly=temperature_2m,wind_speed_10m,precipitation"
                      + "&daily=sunrise,sunset"
-                     + "&forecast_days=14"
+                     + "&start_date=" + start.format(ISO_DATE)
+                     + "&end_date=" + end.format(ISO_DATE)
                      + "&wind_speed_unit=ms"
                      + "&timezone=auto";
 

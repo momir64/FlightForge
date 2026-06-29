@@ -10,6 +10,7 @@ import org.kie.api.runtime.KieSession;
 import jakarta.annotation.PreDestroy;
 import rs.moma.flightforge.model.*;
 
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class CepService {
 
     public CepService(KieSession session) {
         this.session = session;
+        SessionPseudoClock clock = session.getSessionClock();
+        clock.advanceTime(System.currentTimeMillis() - clock.getCurrentTime(), TimeUnit.MILLISECONDS);
     }
 
     public synchronized void setAlertListener(Consumer<SessionAlert> listener) {
@@ -83,7 +86,8 @@ public class CepService {
         SessionPseudoClock clock = session.getSessionClock();
         long deltaMillis = time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli() - clock.getCurrentTime();
         if (deltaMillis < 0)
-            throw new IllegalArgumentException("Cannot move the demo clock backwards; current time is " + getCurrentTime() + ".");
+            throw new IllegalArgumentException("Cannot move the demo clock backwards; current time is " +
+                                               getCurrentTime().format(DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm")) + ".");
         clock.advanceTime(deltaMillis, TimeUnit.MILLISECONDS);
         fireRules();
     }
@@ -104,9 +108,12 @@ public class CepService {
     }
 
     public synchronized List<SessionAlert> drainAlerts() {
-        List<SessionAlert> alerts = session.getObjects(obj -> obj instanceof SessionAlert)
+        List<SessionAlert> alerts = session.getObjects(obj -> obj instanceof SessionAlert sa && !sa.isSent())
                                            .stream().map(SessionAlert.class::cast).collect(Collectors.toList());
-        alerts.forEach(alert -> session.delete(session.getFactHandle(alert)));
+        alerts.forEach(alert -> {
+            alert.setSent(true);
+            session.update(session.getFactHandle(alert), alert);
+        });
         return alerts;
     }
 

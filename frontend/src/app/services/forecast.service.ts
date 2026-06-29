@@ -32,7 +32,7 @@ export class ForecastService {
   }
 
   getClock() {
-    return this.http.get(`${this.base}/clock`, { responseType: 'text' });
+    return this.http.get<string>(`${this.base}/clock`);
   }
 
   setClock(time: string) {
