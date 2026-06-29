@@ -62,7 +62,6 @@ public class DemoRunner implements CommandLineRunner {
         prefs.setPriority(Priority.MIN_WEIGHT);
         prefs.setMetalGearsPreference(false);
         prefs.setLocation("Novi Sad");
-        prefs.setSessionDuration(60);
 
         BuildConfig b = new BuildConfig();
         b.setAirplane(plane);

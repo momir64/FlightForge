@@ -66,7 +66,8 @@ public class BackwardChainingService {
 
         QueryResults motorResults = session.getQueryResults("findMotor", plane, prefs, weight, Variable.v);
         if (motorResults.size() == 0)
-            return String.format("No motor configuration provides sufficient thrust for estimated weight of %.1f g.", weight);
+            return String.format("No motor configuration reaches the required T/W ratio of %.2f at the estimated weight of %.1f g.",
+                    BuildHelper.minTW(plane, prefs), weight);
 
         MotorConfiguration mc = (MotorConfiguration) motorResults.iterator().next().get("$mc");
 
@@ -78,7 +79,7 @@ public class BackwardChainingService {
 
         Servo servo = (Servo) session.getQueryResults("findServo", plane, prefs, weight, Variable.v).iterator().next().get("$servo");
 
-        if (session.getQueryResults("findBatteryDischargeOnly", mc, Variable.v).size() == 0)
+        if (session.getQueryResults("findBatteryDischargeOnly", mc, plane, servo, receiver, Variable.v).size() == 0)
             return "No available battery matches the cell count and discharge requirements.";
 
         if (prefs.getMinFlightTime() != null && session.getQueryResults("findBattery", mc, plane, prefs, servo, receiver, Variable.v).size() == 0)

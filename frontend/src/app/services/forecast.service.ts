@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { ForecastHour, ScheduledSession, SessionSuggestion } from '../models';
+import { ForecastHour, ScheduledSession } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ForecastService {
@@ -10,7 +10,6 @@ export class ForecastService {
 
   forecast$ = new BehaviorSubject<ForecastHour[]>([]);
   sessions$ = new BehaviorSubject<ScheduledSession[]>([]);
-  suggestions$ = new BehaviorSubject<SessionSuggestion[]>([]);
 
   constructor(private http: HttpClient) {}
 
@@ -22,11 +21,6 @@ export class ForecastService {
   loadSessions() {
     return this.http.get<ScheduledSession[]>(`${this.base}`)
       .pipe(tap(s => this.sessions$.next(s)));
-  }
-
-  loadSuggestions(durationHours: number) {
-    return this.http.get<SessionSuggestion[]>(`${this.base}/suggestions`, { params: { durationHours } })
-      .pipe(tap(s => this.suggestions$.next(s)));
   }
 
   scheduleSession(startTime: string, endTime: string) {

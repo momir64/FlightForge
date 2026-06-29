@@ -12,7 +12,6 @@ public class BuildRequest {
     private Priority priority;
     private boolean metalGearsPreference;
     private String location;
-    private int sessionDuration;
 
     private Long motorConfigurationId;
     private Long escId;

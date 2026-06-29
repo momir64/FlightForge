@@ -40,9 +40,9 @@ rule "L3.2 - Classify maneuverability"
     then
         double twRatio = $tw / $build.getAirplane().getRecommendedTwFactor();
         Maneuverability m;
-        if ($wcl > 12.0 || twRatio < 1.5) {
+        if ($wcl > 9.5 || twRatio < 0.8) {
             m = Maneuverability.HARD;
-        } else if ($wcl <= 6.0 && twRatio >= 2.0) {
+        } else if ($wcl <= 6.5 && twRatio >= 1.0) {
             m = Maneuverability.EASY;
         } else {
             m = Maneuverability.MEDIUM;

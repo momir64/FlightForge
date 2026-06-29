@@ -2,8 +2,7 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { ForecastService } from '../../services/forecast.service';
-import { SettingsService } from '../../services/settings.service';
-import { ForecastHour, ScheduledSession, SessionSuggestion } from '../../models';
+import { ForecastHour, ScheduledSession } from '../../models';
 
 @Component({
   selector: 'app-forecast',
@@ -15,7 +14,6 @@ import { ForecastHour, ScheduledSession, SessionSuggestion } from '../../models'
 export class ForecastComponent implements OnInit {
   forecast: ForecastHour[] = [];
   sessions: ScheduledSession[] = [];
-  suggestions: SessionSuggestion[] = [];
 
   dates: string[] = [];
   selectedDate: string | null = null;
@@ -24,11 +22,8 @@ export class ForecastComponent implements OnInit {
   selectionStep: 0 | 1 = 0;
   selectionStart: string | null = null;
 
-  suggestedTimestamps = new Set<string>();
-
   constructor(
     private forecastService: ForecastService,
-    private settingsService: SettingsService,
     private cdr: ChangeDetectorRef,
   ) {}
 
@@ -41,11 +36,6 @@ export class ForecastComponent implements OnInit {
     });
     this.forecastService.sessions$.subscribe(s => {
       this.sessions = s;
-      this.cdr.markForCheck();
-    });
-    this.forecastService.suggestions$.subscribe(s => {
-      this.suggestions = s;
-      this.suggestedTimestamps = new Set(s.flatMap(x => x.hours.map(h => h.timestamp)));
       this.cdr.markForCheck();
     });
 
@@ -73,15 +63,14 @@ export class ForecastComponent implements OnInit {
     const unsuitable = hours.filter(h => h.suitability === 'UNSUITABLE').length;
     const ideal = hours.filter(h => h.suitability === 'IDEAL').length;
     if (unsuitable > hours.length / 2) return 'bad';
-    if (ideal > hours.length / 2) return 'ideal';
+    if (ideal > hours.length / 3) return 'ideal';
     return 'ok';
   }
 
   hourCellClass(h: ForecastHour): string {
     const suit = h.suitability ?? 'unclassified';
-    const suggested = this.suggestedTimestamps.has(h.timestamp) ? 'suggested' : '';
     const selecting = this.selectionStep === 1 && this.selectionStart === h.timestamp ? 'selecting-start' : '';
-    return [suit, suggested, selecting].filter(Boolean).join(' ');
+    return [suit, selecting].filter(Boolean).join(' ');
   }
 
   onHourClick(h: ForecastHour) {
@@ -103,13 +92,6 @@ export class ForecastComponent implements OnInit {
   resetSelection() {
     this.selectionStep = 0;
     this.selectionStart = null;
-  }
-
-  loadSuggestions() {
-    const duration = Math.ceil(this.settingsService.settings$.value.sessionDuration / 60) || 1;
-    this.forecastService.loadSuggestions(duration).subscribe({
-      error: () => alert('No suggestions found.'),
-    });
   }
 
   cancelSession(startTime: string) {

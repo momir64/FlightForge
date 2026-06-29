@@ -94,7 +94,6 @@
   &.UNSUITABLE  { background: var(--unsuitable); border-color: var(--unsuitable-border); }
   &.unclassified { background: var(--surface2);  border-color: var(--border); }
 
-  &.suggested { outline: 2px solid var(--suggested-border); outline-offset: 1px; }
   &.selecting-start { border-color: var(--accent) !important; }
 }
 
@@ -185,17 +184,4 @@
   color: var(--unsuitable-border) !important;
 
   .material-symbols-rounded { font-size: 14px !important; line-height: 1; }
-}
-
-.suggest-btn {
-  margin-top: auto;
-  width: 100%;
-  font-size: 11px !important;
-  border-color: var(--border) !important;
-  color: var(--text) !important;
-
-  .material-symbols-rounded {
-    font-size: 14px !important;
-    margin-right: 4px;
-  }
 }

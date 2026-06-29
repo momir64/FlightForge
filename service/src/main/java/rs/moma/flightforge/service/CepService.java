@@ -10,11 +10,10 @@ import rs.moma.flightforge.model.*;
 
 import java.util.stream.Collectors;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.Instant;
 import java.util.Comparator;
-import java.util.ArrayList;
+import java.time.Instant;
 import java.util.HashMap;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Map;
 
@@ -104,40 +103,6 @@ public class CepService {
                       .map(ScheduledSession.class::cast)
                       .sorted(Comparator.comparing(ScheduledSession::getStartTime))
                       .collect(Collectors.toList());
-    }
-
-    public synchronized List<SessionSuggestion> suggestSessions(int durationHours) {
-        List<ForecastHour> forecast = session.getObjects(obj -> obj instanceof ForecastHour).stream()
-                                             .map(ForecastHour.class::cast)
-                                             .filter(h -> h.getSuitability() != null)
-                                             .sorted(Comparator.comparing(ForecastHour::getTimestamp))
-                                             .toList();
-
-        List<SessionSuggestion> suggestions = new ArrayList<>();
-        for (int i = 0; i <= forecast.size() - durationHours; i++) {
-            List<ForecastHour> window = forecast.subList(i, i + durationHours);
-
-            boolean consecutive = true;
-            for (int j = 1; j < window.size(); j++) {
-                if (!window.get(j).getTimestamp().equals(window.get(j - 1).getTimestamp().plusHours(1))) {
-                    consecutive = false;
-                    break;
-                }
-            }
-            if (!consecutive) continue;
-
-            if (window.stream().anyMatch(h -> h.getSuitability() == HourSuitability.UNSUITABLE)) continue;
-            long idealCount = window.stream().filter(h -> h.getSuitability() == HourSuitability.IDEAL).count();
-            suggestions.add(new SessionSuggestion(
-                    window.getFirst().getTimestamp(),
-                    window.getLast().getTimestamp().plusHours(1),
-                    idealCount,
-                    new ArrayList<>(window)
-            ));
-        }
-
-        suggestions.sort(Comparator.comparingLong(SessionSuggestion::getIdealHours).reversed());
-        return suggestions;
     }
 
     @PreDestroy

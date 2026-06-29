@@ -25,11 +25,6 @@ public class SessionController {
         cepService.removeSession(startTime);
     }
 
-    @GetMapping("/suggestions")
-    public List<SessionSuggestion> suggest(@RequestParam int durationHours) {
-        return cepService.suggestSessions(durationHours);
-    }
-
     @GetMapping("/forecast")
     public List<ForecastHour> forecast() {
         return cepService.getForecastHours();

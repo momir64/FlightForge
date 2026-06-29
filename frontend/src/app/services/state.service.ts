@@ -75,7 +75,6 @@ export class StateService {
       priority: t.priority,
       metalGearsPreference: t.metalGearsPreference,
       location: s.location,
-      sessionDuration: s.sessionDuration,
       motorConfigurationId: c.motorConfigurationId,
       escId: c.escId,
       batteryId: c.batteryId,

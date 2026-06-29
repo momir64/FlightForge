@@ -8,7 +8,6 @@ const DEFAULT_SETTINGS: Settings = {
   location: '',
   receiverWeight: 8.5,
   receiverPowerConsumption: 45.0,
-  sessionDuration: 60,
 };
 
 @Injectable({ providedIn: 'root' })

@@ -60,7 +60,6 @@ public class BCDemoRunner implements CommandLineRunner {
         prefs.setMinTWRatio(minTWRatio);
         prefs.setMinFlightTime(minFlightTime);
         prefs.setLocation("Novi Sad");
-        prefs.setSessionDuration(60);
         return prefs;
     }
 

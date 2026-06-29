@@ -29,13 +29,6 @@ export class SettingsComponent {
     this.settings = { ...this.settingsService.settings$.value };
   }
 
-  onNumericInput(event: Event) {
-    const input = event.target as HTMLInputElement;
-    input.value = input.value
-      .replace(/[^0-9]/g, '')
-      .replace(/^0+(?=\d)/, '');
-  }
-
   onDecimalInput(event: Event) {
     const input = event.target as HTMLInputElement;
     input.value = input.value

@@ -118,7 +118,6 @@ public class CepDemoRunner implements CommandLineRunner {
         prefs.setPriority(Priority.MIN_WEIGHT);
         prefs.setMetalGearsPreference(false);
         prefs.setLocation("Novi Sad");
-        prefs.setSessionDuration(60);
 
         return BuildHelper.makeBuildConfig(scout, prefs, mc, esc, battery, servo, receiver);
     }

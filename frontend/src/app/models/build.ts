@@ -13,7 +13,6 @@ export interface UserPreferences {
   priority: Priority;
   metalGearsPreference: boolean;
   location: string;
-  sessionDuration: number;
 }
 
 export interface BuildConfig {
@@ -57,7 +56,6 @@ export interface BuildRequest {
   priority: Priority;
   metalGearsPreference: boolean;
   location: string;
-  sessionDuration: number;
   motorConfigurationId: number | null;
   escId: number | null;
   batteryId: number | null;

@@ -15,5 +15,4 @@ public class UserPreferences {
     private Priority priority;
     private boolean metalGearsPreference;
     private String location;
-    private int sessionDuration;
 }

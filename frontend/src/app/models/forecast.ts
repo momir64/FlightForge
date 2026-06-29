@@ -16,13 +16,6 @@ export interface ScheduledSession {
   endTime: string;
 }
 
-export interface SessionSuggestion {
-  startTime: string;
-  endTime: string;
-  idealHours: number;
-  hours: ForecastHour[];
-}
-
 export interface SessionAlert {
   type: SessionAlertType;
   message: string;

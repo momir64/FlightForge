@@ -141,27 +141,46 @@ class ForwardChainingRulesTest {
     }
 
     // L3.2 - A higher T/W ratio (vs. the airplane's recommended/plan T/W) means MORE
-    // maneuverable (EASY), not less; a heavy WCL or an underpowered build (twRatio < 1.5)
-    // drags it toward HARD (less maneuverable).
+    // maneuverable (EASY), not less; a heavy WCL or an underpowered build (twRatio < 0.8,
+    // i.e. meaningfully below what the plan itself calls for) drags it toward HARD
+    // (less maneuverable).
     //
-    // Airplane with recommendedTwFactor = 1.0, motor delivers T/W ≈ 1.08 (twRatio ≈ 1.08,
-    // underpowered relative to the plan) and WCL ≈ 7.7 g/dm^1.5 → HARD.
+    // Airplane with recommendedTwFactor = 1.5, motor delivers T/W ≈ 1.08 (twRatio ≈ 0.72,
+    // below the plan's own recommendation) → HARD regardless of WCL.
     @Test
     @DisplayName("L3.2 - HARD maneuverability when underpowered relative to the plan's recommended T/W")
     void testManeuverabilityHardWhenUnderpowered() {
-        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        AirplaneSpecs plane = airplaneWithTwFactor(1.5);
         BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
 
         evaluationService.evaluate(build);
 
         assertThat(build.getManeuverability())
-                .as("twRatio < 1.5 should yield HARD (less maneuverable)")
+                .as("twRatio < 0.8 should yield HARD (less maneuverable)")
                 .isEqualTo(Maneuverability.HARD);
     }
 
     // L3.2 - twRatio ≈ 2.71 (thrust = 2000 g, AUW ≈ 739 g, recommended = 1.0) is well above
-    // the 2.0 threshold, but WCL ≈ 7.7 g/dm^1.5 (sport range, > 6.0) keeps it out of EASY,
-    // so it lands in MEDIUM rather than skipping straight to the easiest class.
+    // the 1.0 threshold, and a 24 dm² wing brings WCL down to ≈ 6.3 g/dm^1.5 — trainer/sport
+    // territory (<= 6.5, per the wing cube loading chart) — so both conditions for EASY are met.
+    @Test
+    @DisplayName("L3.2 - EASY maneuverability when strong T/W is paired with trainer-range WCL")
+    void testManeuverabilityEasy() {
+        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        plane.setWingArea(24.0);
+        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
+        build.setMotorConfiguration(motorConfig(2000.0, 30.0));
+
+        evaluationService.evaluate(build);
+
+        assertThat(build.getManeuverability())
+                .as("twRatio >= 1.0 with WCL <= 6.5 should yield EASY (most maneuverable)")
+                .isEqualTo(Maneuverability.EASY);
+    }
+
+    // L3.2 - Same strong motor (twRatio ≈ 2.71) on the default 20.9 dm² wing gives WCL ≈ 7.7
+    // g/dm^1.5 — past the 6.5 EASY cutoff but still well under the 9.5 HARD cutoff — so it
+    // lands in MEDIUM despite the strong motor.
     @Test
     @DisplayName("L3.2 - MEDIUM maneuverability when strong T/W is offset by sport-class WCL")
     void testManeuverabilityMediumWhenWclLimitsEasy() {
@@ -174,23 +193,6 @@ class ForwardChainingRulesTest {
         assertThat(build.getManeuverability())
                 .as("high twRatio with sport-class WCL should yield MEDIUM, not EASY")
                 .isEqualTo(Maneuverability.MEDIUM);
-    }
-
-    // L3.2 - Same strong motor (twRatio ≈ 2.71) but on a larger wing (30 dm² vs. 20.9 dm²)
-    // brings WCL down to ≈ 4.5 g/dm^1.5 (<= 6.0) → both conditions for EASY are met.
-    @Test
-    @DisplayName("L3.2 - EASY maneuverability when strong T/W is paired with light WCL")
-    void testManeuverabilityEasy() {
-        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
-        plane.setWingArea(30.0);
-        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
-        build.setMotorConfiguration(motorConfig(2000.0, 30.0));
-
-        evaluationService.evaluate(build);
-
-        assertThat(build.getManeuverability())
-                .as("twRatio >= 2.0 with WCL <= 6.0 should yield EASY (most maneuverable)")
-                .isEqualTo(Maneuverability.EASY);
     }
 
     // L3.3 - MEDIUM maneuverability (see testManeuverabilityMediumWhenWclLimitsEasy), AUW ≈ 739 g.
@@ -323,7 +325,6 @@ class ForwardChainingRulesTest {
         p.setPriority(Priority.MIN_WEIGHT);
         p.setMetalGearsPreference(false);
         p.setLocation("Test City");
-        p.setSessionDuration(60);
         return p;
     }
 

@@ -68,7 +68,6 @@ public class BuildController {
         prefs.setPriority(req.getPriority());
         prefs.setMetalGearsPreference(req.isMetalGearsPreference());
         prefs.setLocation(req.getLocation());
-        prefs.setSessionDuration(req.getSessionDuration());
         return prefs;
     }
 }

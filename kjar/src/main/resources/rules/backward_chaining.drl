@@ -36,24 +36,24 @@ query findServo(AirplaneSpecs $plane, UserPreferences $prefs, double $est, Servo
         !$prefs.isMetalGearsPreference() || gearType == GearType.METAL)
 end
 
-// Full battery check: cell count, discharge, and optional flight time
+// Full battery check: cell count, discharge against the whole system's draw, and optional flight time
 query findBattery(MotorConfiguration $mc, AirplaneSpecs $plane, UserPreferences $prefs,
                   Servo $servo, Receiver $receiver, Battery $bat)
     $bat := Battery(
         available == true,
         cellCount == $mc.getCellCount(),
-        capacity * cRating / 1000.0 >= $mc.getMaxCurrent(),
+        capacity * cRating / 1000.0 >= BuildHelper.totalMaxConsumption($mc, BuildHelper.servosFor($plane, $servo), $receiver),
         $prefs.getMinFlightTime() == null
             || (capacity / 1000.0) / BuildHelper.totalMaxConsumption($mc, BuildHelper.servosFor($plane, $servo), $receiver) * 60.0
                >= $prefs.getMinFlightTime())
 end
 
 // Discharge-only battery check used in diagnostics to distinguish INCOMPATIBLE_BATTERY from INSUFFICIENT_CAPACITY
-query findBatteryDischargeOnly(MotorConfiguration $mc, Battery $bat)
+query findBatteryDischargeOnly(MotorConfiguration $mc, AirplaneSpecs $plane, Servo $servo, Receiver $receiver, Battery $bat)
     $bat := Battery(
         available == true,
         cellCount == $mc.getCellCount(),
-        capacity * cRating / 1000.0 >= $mc.getMaxCurrent())
+        capacity * cRating / 1000.0 >= BuildHelper.totalMaxConsumption($mc, BuildHelper.servosFor($plane, $servo), $receiver))
 end
 
 query validBuild(AirplaneSpecs $plane, UserPreferences $prefs, Receiver $receiver,
