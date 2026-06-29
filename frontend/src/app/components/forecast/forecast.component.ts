@@ -45,7 +45,8 @@ export class ForecastComponent implements OnInit {
 
   private updateDates() {
     this.dates = [...new Set(this.forecast.map(h => h.timestamp.substring(0, 10)))];
-    if (!this.selectedDate && this.dates.length) this.selectedDate = this.dates[0];
+    if ((!this.selectedDate || !this.dates.includes(this.selectedDate)) && this.dates.length)
+      this.selectedDate = this.dates[0];
   }
 
   private updateHours() {

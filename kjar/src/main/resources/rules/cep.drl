@@ -97,6 +97,14 @@ rule "CEP.4 - Expire past sessions"
         for (Object d : $detections) delete(d);
 end
 
+rule "CEP.4b - Expire past forecast hours"
+    when
+        $now : CurrentTime()
+        $hour : ForecastHour(timestamp before $now)
+    then
+        delete($hour);
+end
+
 rule "CEP.5 - Compose weather deterioration alert"
     when
         $detected : WeatherDeteriorationDetected($type : type, $session : session, $hour : hour)
