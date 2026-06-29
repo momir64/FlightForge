@@ -26,6 +26,7 @@ import java.util.List;
  * Scenario 1 - FLIGHT_REMINDER: session tomorrow, ideal forecast.
  * Scenario 2 - SESSION_NO_LONGER_SUITABLE: forecast update adds rain during session.
  * Scenario 3 - FINISH_FLIGHT: current time inside session, bad weather in 1 hour.
+ * Scenario 4 - EXPIRE_PAST_SESSION: clock advances past session end, session is removed.
  */
 //@Component
 @RequiredArgsConstructor
@@ -47,6 +48,7 @@ public class CepDemoRunner implements CommandLineRunner {
         runScenario1(build);
         runScenario2(build);
         runScenario3(build);
+        runScenario4(build);
     }
 
     private void runScenario1(BuildConfig build) {
@@ -90,6 +92,22 @@ public class CepDemoRunner implements CommandLineRunner {
             cep.updateForecast(forecast);
             printAlerts(cep.drainAlerts());
         } finally {cep.dispose();}
+    }
+
+    private void runScenario4(BuildConfig build) {
+        printHeader("CEP Scenario 4: EXPIRE_PAST_SESSION — clock advances past session end");
+        CepService cep = makeCepService();
+        try {
+            cep.setBuild(build);
+            cep.updateForecast(idealForecast());
+            cep.addSession(new ScheduledSession(NOW.withHour(11), NOW.withHour(13), build));
+            cep.drainAlerts();
+
+            System.out.printf("  Sessions before: %d%n", cep.getScheduledSessions().size());
+            cep.setCurrentTime(NOW.withHour(14));
+            System.out.printf("  Sessions after:  %d%n", cep.getScheduledSessions().size());
+            System.out.println();
+        } finally { cep.dispose(); }
     }
 
     private CepService makeCepService() {

@@ -3,6 +3,6 @@
         <ksession name="FlightForgeKSession"/>
     </kbase>
     <kbase name="FlightForgeCEPKBase" packages="rules" eventProcessingMode="stream">
-        <ksession name="FlightForgeCEPSession" clockType="realtime"/>
+        <ksession name="FlightForgeCEPSession" clockType="pseudo"/>
     </kbase>
 </kmodule>

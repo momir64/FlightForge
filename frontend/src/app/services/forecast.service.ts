@@ -30,4 +30,16 @@ export class ForecastService {
   cancelSession(startTime: string) {
     return this.http.delete(`${this.base}`, { params: { startTime } });
   }
+
+  getClock() {
+    return this.http.get(`${this.base}/clock`, { responseType: 'text' });
+  }
+
+  setClock(time: string) {
+    return this.http.post(`${this.base}/clock`, { time });
+  }
+
+  insertForecastHour(hour: ForecastHour) {
+    return this.http.post(`${this.base}/forecast`, hour);
+  }
 }

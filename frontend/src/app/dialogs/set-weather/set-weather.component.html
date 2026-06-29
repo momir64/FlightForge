@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>Update Weather Hour</h2>
+
+<mat-dialog-content>
+  <div class="field-row">
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Date</mat-label>
+      <input matInput placeholder="dd.MM.yyyy." [matDatepicker]="dp" [(ngModel)]="date">
+      <mat-datepicker-toggle matSuffix [for]="dp" />
+      <mat-datepicker #dp />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Time</mat-label>
+      <input matInput placeholder="HH:mm" [(ngModel)]="time" (input)="onTimeInput($event)">
+    </mat-form-field>
+  </div>
+
+  <div class="field-row">
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Temperature (°C)</mat-label>
+      <input matInput
+        [(ngModel)]="temperature"
+        (input)="onNumericInput($event, true)">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Wind (m/s)</mat-label>
+      <input matInput
+        [(ngModel)]="windSpeed"
+        (input)="onNumericInput($event, false)">
+    </mat-form-field>
+  </div>
+
+  <div class="field-row">
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Precipitation (mm)</mat-label>
+      <input matInput
+        [(ngModel)]="precipitation"
+        (input)="onNumericInput($event, false)">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="field-half">
+      <mat-label>Day part</mat-label>
+      <mat-select [(ngModel)]="dayPart">
+        @for (d of dayParts; track d) {
+          <mat-option [value]="d">{{ d }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (error) {
+    <div class="error">{{ error }}</div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button color="primary" (click)="apply()">Update</button>
+</mat-dialog-actions>

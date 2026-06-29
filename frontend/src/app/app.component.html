@@ -1,0 +1,26 @@
+<div class="app-shell">
+  <div class="content-wrap">
+    <div class="header">
+      <span class="logo"><span class="material-symbols-rounded logo-icon">travel</span> FlightForge</span>
+      <div class="header-actions">
+        <button mat-stroked-button class="header-btn" (click)="openSetTime()">
+          <span class="material-symbols-rounded">schedule</span>
+          Change Current Time
+        </button>
+        <button mat-stroked-button class="header-btn" (click)="openSetWeather()">
+          <span class="material-symbols-rounded">cloud</span>
+          Change Forecast
+        </button>
+        <button mat-icon-button class="settings-btn" (click)="openSettings()" title="Settings">
+          <span class="material-symbols-rounded">settings</span>
+        </button>
+      </div>
+    </div>
+    <app-topbar class="card topbar-card" />
+    <div class="main-area">
+      <app-parts class="card panel-card" />
+      <app-results class="card panel-card" />
+    </div>
+    <app-forecast class="card forecast-card" />
+  </div>
+</div>

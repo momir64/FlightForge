@@ -85,7 +85,21 @@ rule "CEP.3 - Finish flight warning"
         insert(new WeatherDeteriorationDetected(SessionAlertType.FINISH_FLIGHT, $session, $hour));
 end
 
-rule "CEP.4 - Compose weather deterioration alert"
+rule "CEP.4 - Expire past sessions"
+    when
+        $now : CurrentTime()
+        $session : ScheduledSession($start : startTime, endTime before $now)
+        $alerts : java.util.List() from collect(SessionAlert(session == $session))
+        $reminders : java.util.List() from collect(ReminderSent(sessionStartTime == $start))
+        $detections : java.util.List() from collect(WeatherDeteriorationDetected(session == $session))
+    then
+        delete($session);
+        for (Object a : $alerts) delete(a);
+        for (Object r : $reminders) delete(r);
+        for (Object d : $detections) delete(d);
+end
+
+rule "CEP.5 - Compose weather deterioration alert"
     when
         $detected : WeatherDeteriorationDetected($type : type, $session : session, $hour : hour)
         not SessionAlert(type == $type, session == $session, triggeredBy == $hour)

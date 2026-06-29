@@ -30,8 +30,23 @@ public class SessionController {
         return cepService.getForecastHours();
     }
 
+    @PostMapping("/forecast")
+    public void insertForecastHour(@RequestBody ForecastHour hour) {
+        cepService.setForecastHour(hour);
+    }
+
     @GetMapping
     public List<ScheduledSession> scheduled() {
         return cepService.getScheduledSessions();
+    }
+
+    @GetMapping("/clock")
+    public LocalDateTime getClock() {
+        return cepService.getCurrentTime();
+    }
+
+    @PostMapping("/clock")
+    public void setClock(@RequestBody ClockRequest req) {
+        cepService.setCurrentTime(req.getTime());
     }
 }

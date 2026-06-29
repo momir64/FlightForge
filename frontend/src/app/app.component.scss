@@ -1,0 +1,92 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  align-items: center;
+  overflow: auto;
+  padding-bottom: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 24px 0 6px;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-family: var(--mono), monospace;
+  font-size: 20px;
+  font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logo-icon {
+  font-size: 24px !important;
+  color: #fff;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-btn {
+  height: 28px;
+  padding: 0 12px !important;
+
+  .material-symbols-rounded {
+    font-size: 16px;
+    margin-right: 4px;
+  }
+}
+
+.settings-btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  height: 28px !important;
+  width: 28px !important;
+  padding: 0 !important;
+  color: var(--text-dim) !important;
+
+  .material-symbols-rounded {
+    font-size: 22px !important;
+    line-height: 1;
+  }
+}
+
+.content-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.topbar-card {
+  flex-shrink: 0;
+}
+
+.main-area {
+  display: flex;
+  gap: 12px;
+}
+
+.panel-card {
+  flex: 1;
+  min-width: 0;
+}
+
+.forecast-card {
+  flex-shrink: 0;
+}
