@@ -1,6 +1,7 @@
-package rs.moma.flightforge.service;
+package rs.moma.flightforge.demos;
 
 import rs.moma.flightforge.repository.AirplaneSpecsRepository;
+import rs.moma.flightforge.service.BackwardChainingService;
 import rs.moma.flightforge.repository.ReceiverRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,7 @@ import rs.moma.flightforge.model.*;
  * 4. FT Mini Scout, T/W ratio 5.0 required -> expects INSUFFICIENT_THRUST failure.
  * 5. FT Mini Scout, 120-minute flight time required -> expects INSUFFICIENT_CAPACITY failure.
  */
-@Component
+//@Component
 @RequiredArgsConstructor
 public class BCDemoRunner implements CommandLineRunner {
     private final BackwardChainingService backwardChainingService;

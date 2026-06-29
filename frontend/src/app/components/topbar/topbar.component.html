@@ -1,0 +1,71 @@
+<div class="topbar">
+  <mat-form-field appearance="outline" class="field-airplane compact-field">
+    <mat-label>Airplane</mat-label>
+    <input matInput
+      [matAutocomplete]="airplaneAuto"
+      [ngModel]="selectedAirplaneId"
+      (input)="onAirplaneInput($event)"
+      (focus)="onAirplaneFocus()"
+      (blur)="onAirplaneBlur($event)"
+      placeholder="Search...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #airplaneAuto="matAutocomplete"
+      (optionSelected)="onAirplaneSelected($event.option.value)"
+      [displayWith]="airplaneDisplayFn"
+      panelClass="searchable-dropdown-panel">
+      @for (a of filteredAirplanes; track a.id) {
+        <mat-option [value]="a.id">{{ a.name }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-foamboard compact-field">
+    <mat-label>Foamboard (g/dm²)</mat-label>
+    <input matInput
+      [ngModel]="state.foamboardWeight"
+      (ngModelChange)="patch('foamboardWeight', $event)"
+      (input)="onNumericInput($event, true)">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-sm compact-field">
+    <mat-label>Scale factor</mat-label>
+    <input matInput
+      [ngModel]="state.scaleFactor"
+      (ngModelChange)="patch('scaleFactor', $event)"
+      (input)="onNumericInput($event, true)">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-sm compact-field">
+    <mat-label>Min T/W</mat-label>
+    <input matInput
+      [ngModel]="state.minTWRatio"
+      (ngModelChange)="patch('minTWRatio', $event || null)"
+      (input)="onNumericInput($event, true)">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-flighttime compact-field">
+    <mat-label>Min flight (min)</mat-label>
+    <input matInput
+      [ngModel]="state.minFlightTime"
+      (ngModelChange)="patch('minFlightTime', $event || null)"
+      (input)="onNumericInput($event, false)">
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-md compact-field">
+    <mat-label>Priority</mat-label>
+    <mat-select [ngModel]="state.priority" (ngModelChange)="patch('priority', $event)">
+      @for (p of priorities; track p.value) {
+        <mat-option [value]="p.value">{{ p.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-md compact-field">
+    <mat-label>Servo gears</mat-label>
+    <mat-select [ngModel]="state.metalGearsPreference" (ngModelChange)="patch('metalGearsPreference', $event)">
+      @for (g of gearOptions; track g.value) {
+        <mat-option [value]="g.value">{{ g.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</div>

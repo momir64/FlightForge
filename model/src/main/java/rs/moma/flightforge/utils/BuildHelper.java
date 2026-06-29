@@ -2,11 +2,15 @@ package rs.moma.flightforge.utils;
 
 import rs.moma.flightforge.model.*;
 
+import java.util.function.ToDoubleFunction;
+import java.util.function.BiFunction;
 import java.util.Collections;
 import java.util.List;
 
-public class BuildHelper {
+public final class BuildHelper {
     private static final double REF_FOAM_DENSITY = 2.927;
+
+    private BuildHelper() {}
 
     public static double correctedDryWeight(AirplaneSpecs plane, UserPreferences prefs) {
         double foamRatio = prefs.getFoamboardWeight() / REF_FOAM_DENSITY;
@@ -14,18 +18,26 @@ public class BuildHelper {
         return plane.getDryWeight() * foamRatio * sf * sf;
     }
 
+    private static <T> double valueOf(T obj, ToDoubleFunction<T> getter) {
+        return obj == null ? 0 : getter.applyAsDouble(obj);
+    }
+
+    private static <T, U> double valueOf(T obj, U ctx, BiFunction<T, U, Double> getter) {
+        return obj == null || ctx == null ? 0 : getter.apply(obj, ctx);
+    }
+
     public static double allUpWeight(AirplaneSpecs plane, UserPreferences prefs, MotorConfiguration mc, ESC esc,
                                      Battery bat, List<Servo> servos, Receiver receiver) {
-        return correctedDryWeight(plane, prefs)
-               + mc.getMotor().getWeight()
-               + mc.getPropeller().getWeight()
-               + esc.getWeight()
-               + bat.getWeight()
-               + servos.stream().mapToDouble(Servo::getWeight).sum()
-               + receiver.getWeight();
+        return valueOf(plane, prefs, BuildHelper::correctedDryWeight)
+               + valueOf(mc, m -> m.getMotor().getWeight() + m.getPropeller().getWeight())
+               + valueOf(esc, ESC::getWeight)
+               + valueOf(bat, Battery::getWeight)
+               + valueOf(servos, s -> s.stream().mapToDouble(Servo::getWeight).sum())
+               + valueOf(receiver, Receiver::getWeight);
     }
 
     public static double allUpWeight(BuildConfig b) {
+        if (b.getAllUpWeight() != null) return b.getAllUpWeight();
         return allUpWeight(b.getAirplane(), b.getUserPreferences(), b.getMotorConfiguration(),
                            b.getEsc(), b.getBattery(), b.getServos(), b.getReceiver());
     }
@@ -36,10 +48,14 @@ public class BuildHelper {
                + receiver.getPowerConsumption() / 1000.0;
     }
 
+    public static double servoAndReceiverLoad(List<Servo> servos, Receiver receiver) {
+        return servos.stream().mapToDouble(Servo::getStallCurrent).sum() / 1000.0
+               + receiver.getPowerConsumption() / 1000.0;
+    }
+
     public static double minTW(AirplaneSpecs plane, UserPreferences prefs) {
-        return prefs.getMinTWRatio() != null
-               ? prefs.getMinTWRatio()
-               : plane.getRecommendedTwFactor();
+        if (prefs.getMinTWRatio() != null) return prefs.getMinTWRatio();
+        return plane.getRecommendedTwFactor() > 0 ? plane.getRecommendedTwFactor() : 1.0;
     }
 
     public static int requiredServoCategory(double auw) {
@@ -71,26 +87,33 @@ public class BuildHelper {
         build.setBattery(bat);
         build.setServos(servosFor(plane, servo));
         build.setReceiver(receiver);
+        build.setTotalPrice(totalPrice(build));
         return build;
     }
 
     public static double twFactor(BuildConfig build) {
-        return build.getMotorConfiguration().getThrust()
-               / allUpWeight(build.getAirplane(), build.getUserPreferences(),
-                             build.getMotorConfiguration(), build.getEsc(), build.getBattery(),
-                             build.getServos(), build.getReceiver());
+        if (build.getTwFactor() != null) return build.getTwFactor();
+        if (build.getMotorConfiguration() == null) return 0;
+        double auw = allUpWeight(build);
+        return auw > 0 ? build.getMotorConfiguration().getThrust() / auw : 0;
     }
 
     public static double estimatedFlightTime(BuildConfig build) {
-        double total = totalMaxConsumption(build.getMotorConfiguration(), build.getServos(), build.getReceiver());
-        return (build.getBattery().getCapacity() / 1000.0) / total * 60.0;
+        if (build.getEstimatedFlightTime() != null) return build.getEstimatedFlightTime();
+        if (build.getBattery() == null || build.getMotorConfiguration() == null) return 0;
+        double totalCurrent = build.getMotorConfiguration().getMaxCurrent();
+        totalCurrent += valueOf(build.getServos(), s -> s.stream().mapToDouble(Servo::getStallCurrent).sum() / 1000.0);
+        totalCurrent += valueOf(build.getReceiver(), r -> r.getPowerConsumption() / 1000.0);
+        if (totalCurrent <= 0) return 0;
+        return (build.getBattery().getCapacity() / 1000.0) / totalCurrent * 60.0;
     }
 
     public static double totalPrice(BuildConfig build) {
-        return build.getMotorConfiguration().getMotor().getPrice()
-               + build.getMotorConfiguration().getPropeller().getPrice()
-               + build.getEsc().getPrice()
-               + build.getBattery().getPrice()
-               + build.getServos().stream().mapToDouble(Servo::getPrice).sum();
+        double price = 0;
+        price += valueOf(build.getMotorConfiguration(), m -> m.getMotor().getPrice() + m.getPropeller().getPrice());
+        price += valueOf(build.getEsc(), ESC::getPrice);
+        price += valueOf(build.getBattery(), Battery::getPrice);
+        price += valueOf(build.getServos(), s -> s.stream().mapToDouble(Servo::getPrice).sum());
+        return price;
     }
 }

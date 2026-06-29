@@ -1,0 +1,118 @@
+<div class="panel">
+  <div class="card-title">Components</div>
+
+  <mat-form-field appearance="outline" class="field-full">
+    <mat-label>Motor</mat-label>
+    <input matInput
+      [matAutocomplete]="motorAuto"
+      [ngModel]="selectedMotorId"
+      (input)="onSearchInput($event, 'motor')"
+      (focus)="onFocusReset('motor')"
+      (blur)="onBlur($event, 'motor')"
+      placeholder="Search...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #motorAuto="matAutocomplete"
+      [displayWith]="motorDisplayFn"
+      (optionSelected)="onMotorSelected($event.option.value)"
+      panelClass="searchable-dropdown-panel">
+      @for (m of filteredMotors; track m.motor.id) {
+        <mat-option [value]="m.motor.id">{{ motorLabel(m.motor) }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-full">
+    <mat-label>Propeller</mat-label>
+    <input matInput
+      [matAutocomplete]="propAuto"
+      [ngModel]="selectedConfigId"
+      (input)="onSearchInput($event, 'propeller')"
+      (focus)="onFocusReset('propeller')"
+      (blur)="onBlur($event, 'propeller')"
+      [disabled]="!selectedMotorId"
+      placeholder="Select motor first...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #propAuto="matAutocomplete"
+      [displayWith]="propellerDisplayFn"
+      (optionSelected)="onPropellerSelected($event.option.value)"
+      panelClass="searchable-dropdown-panel">
+      @for (p of filteredPropellers; track p.configId) {
+        <mat-option [value]="p.configId">{{ propLabel(p) }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-full">
+    <mat-label>ESC</mat-label>
+    <input matInput
+      [matAutocomplete]="escAuto"
+      [ngModel]="escId"
+      (input)="onSearchInput($event, 'esc')"
+      (focus)="onFocusReset('esc')"
+      (blur)="onBlur($event, 'esc')"
+      placeholder="Search...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #escAuto="matAutocomplete"
+      [displayWith]="escDisplayFn"
+      (optionSelected)="onEscSelected($event.option.value)"
+      panelClass="searchable-dropdown-panel">
+      @for (e of filteredEscs; track e.id) {
+        <mat-option [value]="e.id">{{ escLabel(e) }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-full">
+    <mat-label>Battery</mat-label>
+    <input matInput
+      [matAutocomplete]="batAuto"
+      [ngModel]="batteryId"
+      (input)="onSearchInput($event, 'battery')"
+      (focus)="onFocusReset('battery')"
+      (blur)="onBlur($event, 'battery')"
+      placeholder="Search...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #batAuto="matAutocomplete"
+      [displayWith]="batteryDisplayFn"
+      (optionSelected)="onBatterySelected($event.option.value)"
+      panelClass="searchable-dropdown-panel">
+      @for (b of filteredBatteries; track b.id) {
+        <mat-option [value]="b.id">{{ batLabel(b) }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="field-full">
+    <mat-label>Servo</mat-label>
+    <input matInput
+      [matAutocomplete]="servoAuto"
+      [ngModel]="servoId"
+      (input)="onSearchInput($event, 'servo')"
+      (focus)="onFocusReset('servo')"
+      (blur)="onBlur($event, 'servo')"
+      placeholder="Search...">
+    <span matSuffix class="dropdown-arrow"></span>
+    <mat-autocomplete #servoAuto="matAutocomplete"
+      [displayWith]="servoDisplayFn"
+      (optionSelected)="onServoSelected($event.option.value)"
+      panelClass="searchable-dropdown-panel">
+      @for (s of filteredServos; track s.id) {
+        <mat-option [value]="s.id">{{ servoLabel(s) }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+
+  <div class="btn-row">
+    <button mat-flat-button color="primary" (click)="evaluate()" [disabled]="loading || !canEvaluate">
+      <span class="material-symbols-rounded">calculate</span>
+      Evaluate
+    </button>
+    <button mat-stroked-button (click)="suggest()" [disabled]="loading || !canSuggest">
+      <span class="material-symbols-rounded">auto_fix_high</span>
+      Auto-suggest
+    </button>
+    @if (loading) {
+      <mat-spinner diameter="20" class="btn-row-spinner" />
+    }
+  </div>
+</div>

@@ -1,0 +1,27 @@
+.alert-wrap {
+  padding: 8px;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.alert-icon {
+  color: var(--warn) !important;
+  font-size: 22px !important;
+}
+
+.alert-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.alert-msg {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}

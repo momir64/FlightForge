@@ -15,4 +15,5 @@ public class ForecastHour {
     private double windSpeed;
     private double precipitation;
     private DayPart dayPart;
+    private HourSuitability suitability;
 }

@@ -1,0 +1,12 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+
+.field-airplane { flex: 2 1 100px; min-width: 0; }
+.field-sm { flex: 1 1 70px; min-width: 0; }
+.field-foamboard { flex: 1.5 1 90px; min-width: 0; }
+.field-flighttime { flex: 1.5 1 65px; min-width: 0; }
+.field-md { flex: 1.4 1 90px; min-width: 0; }

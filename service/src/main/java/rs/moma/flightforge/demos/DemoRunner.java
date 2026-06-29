@@ -1,5 +1,6 @@
-package rs.moma.flightforge.service;
+package rs.moma.flightforge.demos;
 
+import rs.moma.flightforge.service.BuildEvaluationService;
 import org.springframework.boot.CommandLineRunner;
 import rs.moma.flightforge.repository.*;
 import org.jspecify.annotations.NonNull;

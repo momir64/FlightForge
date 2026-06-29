@@ -1,0 +1,72 @@
+<div class="panel">
+  <div class="card-title">Results</div>
+
+  @if (!result) {
+    <div class="empty">
+      <span class="material-symbols-rounded empty-icon">monitoring</span>
+      <div>Select components and click Evaluate, <br>or use Auto-suggest option.</div>
+    </div>
+  }
+
+  @if (result && b) {
+    <div class="metrics-grid">
+      <div class="metric">
+        <div class="metric-label">Dry weight</div>
+        <div class="metric-value">{{ fmt(b.correctedDryWeight, 'g') }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">All-up weight</div>
+        <div class="metric-value">{{ fmt(b.allUpWeight, 'g') }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Thrust</div>
+        <div class="metric-value">{{ fmt(b.motorConfiguration?.thrust, 'g') }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">T/W factor</div>
+        <div class="metric-value" [class]="twClass(b.twFactor)">{{ fmtVal(b.twFactor) }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Wing loading</div>
+        <div class="metric-value">{{ fmt(b.wingLoading, 'g/dm²') }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">WCL factor</div>
+        <div class="metric-value">{{ fmtVal(b.wclFactor) }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Est. flight time</div>
+        <div class="metric-value">{{ fmt(b.estimatedFlightTime, 'min') }}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Total price</div>
+        <div class="metric-value">{{ fmt(b.totalPrice, '€') }}</div>
+      </div>
+      @if (b.maneuverability) {
+        <div class="metric metric-full">
+          <div class="metric-label">Maneuverability</div>
+          <div class="metric-value">
+            <span class="maneuv-badge" [class]="maneuvClass(b.maneuverability)">
+              {{ b.maneuverability }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  @if (result && result.warnings.length > 0) {
+    <div class="result-card">
+      <div class="card-title">Warnings</div>
+      <div class="warnings">
+        @for (w of result.warnings; track w.message) {
+          <div class="warning-bubble">
+            <span class="material-symbols-rounded">warning</span>
+            <span>{{ w.message }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+</div>

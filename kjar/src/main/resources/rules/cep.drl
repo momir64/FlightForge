@@ -1,0 +1,100 @@
+package rules
+
+import rs.moma.flightforge.model.ForecastHour;
+import rs.moma.flightforge.model.ScheduledSession;
+import rs.moma.flightforge.model.SessionAlert;
+import rs.moma.flightforge.model.SessionAlertType;
+import rs.moma.flightforge.model.HourSuitability;
+import rs.moma.flightforge.model.ReminderSent;
+import rs.moma.flightforge.model.CurrentTime;
+import rs.moma.flightforge.model.DayPart;
+
+import java.time.format.DateTimeFormatter;
+
+declare ForecastHour
+    @role(event)
+    @timestamp(timestamp)
+end
+
+declare ScheduledSession
+    @role(event)
+    @timestamp(startTimeMs)
+    @duration(durationMillis)
+end
+
+declare CurrentTime
+    @role(event)
+    @timestamp(timestamp)
+end
+
+rule "CEP.1 - Flight reminder for tomorrow's session"
+    when
+        CurrentTime($tomorrow : timestamp.toLocalDate().plusDays(1))
+        $session : ScheduledSession($start : startTime, $start.toLocalDate() == $tomorrow)
+        not ReminderSent(sessionStartTime == $start)
+    then
+        insert(new ReminderSent($start));
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm");
+        insert(new SessionAlert(
+            SessionAlertType.FLIGHT_REMINDER,
+            "Reminder: you have a flight session scheduled tomorrow " + $start.format(fmt) + ".",
+            $session,
+            null
+        ));
+end
+
+rule "CEP.2 - Session no longer suitable"
+    when
+        $session : ScheduledSession($start : startTime)
+        $hour : ForecastHour(
+            suitability == HourSuitability.UNSUITABLE,
+            $ts : timestamp,
+            this during $session
+        )
+        not SessionAlert(
+            type == SessionAlertType.SESSION_NO_LONGER_SUITABLE,
+            session == $session,
+            triggeredBy == $hour
+        )
+    then
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm");
+        String reason = $hour.getPrecipitation() > 0.0 ? String.format("rain (%.1f mm)", $hour.getPrecipitation())
+                       : $hour.getDayPart() == DayPart.NIGHT ? "nighttime"
+                       : $hour.getTemperature() < 0.0 || $hour.getTemperature() > 30.0 ? String.format("extreme temperature (%.0f°C)", $hour.getTemperature())
+                       : String.format("strong wind (%.1f m/s)", $hour.getWindSpeed());
+        insert(new SessionAlert(
+            SessionAlertType.SESSION_NO_LONGER_SUITABLE,
+            "Session at " + $start.format(fmt) + " is no longer suitable: " +
+                reason + " expected at " + $ts.format(fmt) + ".",
+            $session,
+            $hour
+        ));
+end
+
+rule "CEP.3 - Finish flight warning"
+    when
+        $now : CurrentTime()
+        $session : ScheduledSession($start : startTime, this includes $now)
+        $hour : ForecastHour(
+            suitability == HourSuitability.UNSUITABLE,
+            $ts : timestamp,
+            this after[1s,2h] $now
+        )
+        not SessionAlert(
+            type == SessionAlertType.FINISH_FLIGHT,
+            session == $session,
+            triggeredBy == $hour
+        )
+    then
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm");
+        String reason = $hour.getPrecipitation() > 0.0 ? String.format("rain (%.1f mm)", $hour.getPrecipitation())
+                       : $hour.getDayPart() == DayPart.NIGHT ? "nighttime"
+                       : $hour.getTemperature() < 0.0 || $hour.getTemperature() > 30.0 ? String.format("extreme temperature (%.0f°C)", $hour.getTemperature())
+                       : String.format("strong wind (%.1f m/s)", $hour.getWindSpeed());
+        insert(new SessionAlert(
+            SessionAlertType.FINISH_FLIGHT,
+            "Conditions deteriorating (" + reason + ") — finish your flight before " + $ts.format(fmt) + ".",
+            $session,
+            $hour
+        ));
+end

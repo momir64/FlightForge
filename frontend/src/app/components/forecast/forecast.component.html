@@ -1,0 +1,68 @@
+<div class="forecast-wrap">
+  <div class="card-title">Forecast</div>
+
+  <div class="date-strip">
+    @for (d of dates; track d) {
+      <div class="date-chip" [class.active]="d === selectedDate" (click)="selectDate(d)">
+        <div class="day-name">{{ formatDayName(d) }}</div>
+        <div class="day-num">{{ formatDayNum(d) }}</div>
+        <div class="day-quality"><span class="quality-dot" [class]="'quality-' + dateQuality(d)"></span></div>
+      </div>
+    }
+  </div>
+
+  <div class="forecast-content">
+
+    <div class="hour-table-wrap">
+      @if (!hoursForDate.length) {
+        <div class="empty">No forecast data. Set location in settings and evaluate a build.</div>
+      }
+      @if (hoursForDate.length) {
+        <div class="hour-table">
+          @for (h of hoursForDate; track h.timestamp) {
+            <div class="hour-cell"
+              [class]="hourCellClass(h)"
+              (click)="onHourClick(h)"
+              [title]="h.dayPart + ' · ' + h.temperature.toFixed(1) + '°C · ' + h.windSpeed.toFixed(1) + ' m/s · ' + h.precipitation.toFixed(1) + 'mm'">
+              <div class="hour-time">{{ formatTime(h.timestamp) }}</div>
+              <div class="hour-info">
+                <div>{{ h.temperature.toFixed(0) }}°</div>
+                <div>{{ h.windSpeed.toFixed(1) }}m/s</div>
+                <div>{{ h.precipitation.toFixed(1) }}mm</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+      @if (selectionStep === 1) {
+        <div class="selection-hint">Click end hour to schedule session</div>
+      }
+    </div>
+
+    <div class="sessions-sidebar">
+      <div class="sidebar-title">Scheduled</div>
+
+      @if (!sessions.length) {
+        <div class="empty">No sessions scheduled.</div>
+      }
+
+      @for (s of sessions; track s.startTime) {
+        <div class="session-item">
+          <div class="session-info">
+            <div class="session-date">{{ formatDate(s.startTime) }}</div>
+            <div class="session-times">{{ formatTime(s.startTime) }} – {{ formatTime(s.endTime) }}</div>
+          </div>
+          <button mat-icon-button class="cancel-btn" (click)="cancelSession(s.startTime)" title="Cancel">
+            <span class="material-symbols-rounded">close</span>
+          </button>
+        </div>
+      }
+
+      <button mat-stroked-button class="suggest-btn" (click)="loadSuggestions()">
+        <span class="material-symbols-rounded">lightbulb</span>
+        Suggest sessions
+      </button>
+    </div>
+
+  </div>
+</div>

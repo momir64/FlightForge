@@ -1,0 +1,41 @@
+.alert-wrap {
+  padding: 28px 22px;
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.alert-icon {
+  color: var(--warn) !important;
+  font-size: 22px !important;
+}
+
+.alert-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.alert-type {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.alert-msg {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+  padding: 14px 0 8px !important;
+}
+
+mat-dialog-actions {
+  padding: 16px 4px 8px !important;
+}

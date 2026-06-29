@@ -158,7 +158,7 @@ Forward chaining se primenjuje nakon što je kombinacija komponenti poznata. Na 
 
 #### 3.3.3 Backward chaining
 
-Kada korisnik zatraži automatski predlog kombinacije komponenti, sistem unazad dokazuje da za odabrani model postoji ispravna kombinacija komponenti. Komponente koje su nedostupne sistem ne uzima u obzir pri pretrazi, ali korisnik ih može ručno odabrati. Korisnik može zaključati određene komponente, u tom slučaju sistem te komponente ne bira automatski već njima prilagođava izbor ostalih komponenti.
+Kada korisnik zatraži automatski predlog kombinacije komponenti, sistem unazad dokazuje da za odabrani model postoji ispravna kombinacija komponenti. Komponente koje su nedostupne sistem ne uzima u obzir pri pretrazi, ali korisnik ih može ručno odabrati.
 
 - Ako je cilj ispravna kombinacija komponenti, onda dokaži da postoji motor konfiguracija (motor/propeler/broj ćelija baterije) sa potiskom koji zadovoljava minimalni T/W faktor za ukupnu težinu i specifikaciju modela
 - Ako je motor konfiguracija poznata, onda dokaži da postoji ESC čija maksimalna struja je veća od maksimalne struje motora i čiji opseg broja ćelija je kompatibilan sa odabranom motor konfiguracijom

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import rs.moma.flightforge.model.*;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -125,6 +126,193 @@ class ForwardChainingRulesTest {
                 .contains(BuildWarningType.INSUFFICIENT_CAPACITY);
     }
 
+    // L3.1 - minTWRatio = 2.0, but motor delivers T/W ≈ 1.08 → INSUFFICIENT_THRUST warning.
+    @Test
+    @DisplayName("L3.1 - INSUFFICIENT_THRUST warning when T/W is below user minimum")
+    void testInsufficientThrustWarning() {
+        BuildConfig build = minimalBuild(airplane, prefs(2.927, 1.0, 2.0, null));
+
+        List<BuildWarning> warnings = evaluationService.evaluate(build);
+
+        assertThat(warnings)
+                .extracting(BuildWarning::getType)
+                .as("INSUFFICIENT_THRUST warning should be raised when T/W < minTWRatio")
+                .contains(BuildWarningType.INSUFFICIENT_THRUST);
+    }
+
+    // L3.2 - A higher T/W ratio (vs. the airplane's recommended/plan T/W) means MORE
+    // maneuverable (EASY), not less; a heavy WCL or an underpowered build (twRatio < 1.5)
+    // drags it toward HARD (less maneuverable).
+    //
+    // Airplane with recommendedTwFactor = 1.0, motor delivers T/W ≈ 1.08 (twRatio ≈ 1.08,
+    // underpowered relative to the plan) and WCL ≈ 7.7 g/dm^1.5 → HARD.
+    @Test
+    @DisplayName("L3.2 - HARD maneuverability when underpowered relative to the plan's recommended T/W")
+    void testManeuverabilityHardWhenUnderpowered() {
+        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
+
+        evaluationService.evaluate(build);
+
+        assertThat(build.getManeuverability())
+                .as("twRatio < 1.5 should yield HARD (less maneuverable)")
+                .isEqualTo(Maneuverability.HARD);
+    }
+
+    // L3.2 - twRatio ≈ 2.71 (thrust = 2000 g, AUW ≈ 739 g, recommended = 1.0) is well above
+    // the 2.0 threshold, but WCL ≈ 7.7 g/dm^1.5 (sport range, > 6.0) keeps it out of EASY,
+    // so it lands in MEDIUM rather than skipping straight to the easiest class.
+    @Test
+    @DisplayName("L3.2 - MEDIUM maneuverability when strong T/W is offset by sport-class WCL")
+    void testManeuverabilityMediumWhenWclLimitsEasy() {
+        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
+        build.setMotorConfiguration(motorConfig(2000.0, 30.0));
+
+        evaluationService.evaluate(build);
+
+        assertThat(build.getManeuverability())
+                .as("high twRatio with sport-class WCL should yield MEDIUM, not EASY")
+                .isEqualTo(Maneuverability.MEDIUM);
+    }
+
+    // L3.2 - Same strong motor (twRatio ≈ 2.71) but on a larger wing (30 dm² vs. 20.9 dm²)
+    // brings WCL down to ≈ 4.5 g/dm^1.5 (<= 6.0) → both conditions for EASY are met.
+    @Test
+    @DisplayName("L3.2 - EASY maneuverability when strong T/W is paired with light WCL")
+    void testManeuverabilityEasy() {
+        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        plane.setWingArea(30.0);
+        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
+        build.setMotorConfiguration(motorConfig(2000.0, 30.0));
+
+        evaluationService.evaluate(build);
+
+        assertThat(build.getManeuverability())
+                .as("twRatio >= 2.0 with WCL <= 6.0 should yield EASY (most maneuverable)")
+                .isEqualTo(Maneuverability.EASY);
+    }
+
+    // L3.3 - MEDIUM maneuverability (see testManeuverabilityMediumWhenWclLimitsEasy), AUW ≈ 739 g.
+    // weightFactor = sqrt(739/500) ≈ 1.216 → lower ≈ 6.08, upper ≈ 12.16 m/s.
+    @Test
+    @DisplayName("L3.3 - wind speed thresholds computed from maneuverability and weight")
+    void testWindSpeedThresholds() {
+        AirplaneSpecs plane = airplaneWithTwFactor(1.0);
+        BuildConfig build = minimalBuild(plane, prefs(2.927, 1.0, null, null));
+        build.setMotorConfiguration(motorConfig(2000.0, 30.0));
+
+        evaluationService.evaluate(build);
+
+        double auw = build.getAllUpWeight();
+        double wf = Math.sqrt(auw / 500.0);
+        assertThat(build.getWindSpeedLowerThreshold())
+                .as("lower threshold = 5.0 × weightFactor for MEDIUM")
+                .isCloseTo(5.0 * wf, within(0.01));
+        assertThat(build.getWindSpeedUpperThreshold())
+                .as("upper threshold = 10.0 × weightFactor for MEDIUM")
+                .isCloseTo(10.0 * wf, within(0.01));
+    }
+
+    // L3.4 - Precipitation > 0 → UNSUITABLE.
+    @Test
+    @DisplayName("L3.4 - ForecastHour marked UNSUITABLE when it is raining")
+    void testForecastUnsuitableIfRaining() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour rainy = forecastHour(LocalDateTime.now(), 20.0, 3.0, 2.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(rainy));
+
+        assertThat(rainy.getSuitability()).isEqualTo(HourSuitability.UNSUITABLE);
+    }
+
+    // L3.5 - NIGHT → UNSUITABLE.
+    @Test
+    @DisplayName("L3.5 - ForecastHour marked UNSUITABLE at night")
+    void testForecastUnsuitableIfNight() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour night = forecastHour(LocalDateTime.now(), 15.0, 2.0, 0.0, DayPart.NIGHT);
+
+        evaluationService.evaluate(build, List.of(night));
+
+        assertThat(night.getSuitability()).isEqualTo(HourSuitability.UNSUITABLE);
+    }
+
+    // L3.6 - Wind 12 m/s > upper threshold 10 m/s → UNSUITABLE.
+    @Test
+    @DisplayName("L3.6 - ForecastHour marked UNSUITABLE when wind exceeds upper threshold")
+    void testForecastUnsuitableIfWindTooStrong() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour windy = forecastHour(LocalDateTime.now(), 20.0, 12.0, 0.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(windy));
+
+        assertThat(windy.getSuitability()).isEqualTo(HourSuitability.UNSUITABLE);
+    }
+
+    // L3.7 - No current rain, but an earlier ForecastHour has precipitation → ACCEPTABLE.
+    @Test
+    @DisplayName("L3.7 - ForecastHour marked ACCEPTABLE when it rained within the past 2 hours")
+    void testForecastAcceptableIfRecentlyRained() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        LocalDateTime now = LocalDateTime.now();
+        ForecastHour pastRain = forecastHour(now.minusHours(1), 20.0, 2.0, 3.0, DayPart.DAY);
+        ForecastHour current = forecastHour(now, 20.0, 2.0, 0.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(pastRain, current));
+
+        assertThat(pastRain.getSuitability()).isEqualTo(HourSuitability.UNSUITABLE);
+        assertThat(current.getSuitability()).isEqualTo(HourSuitability.ACCEPTABLE);
+    }
+
+    // L3.8 - Wind 7 m/s is between lower (5) and upper (10) → ACCEPTABLE.
+    @Test
+    @DisplayName("L3.8 - ForecastHour marked ACCEPTABLE when wind is in the middle range")
+    void testForecastAcceptableIfWindInRange() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour hour = forecastHour(LocalDateTime.now(), 20.0, 7.0, 0.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(hour));
+
+        assertThat(hour.getSuitability()).isEqualTo(HourSuitability.ACCEPTABLE);
+    }
+
+    // L3.9 - Temperature 10 °C is in acceptable (cool) range, other conditions neutral → ACCEPTABLE.
+    @Test
+    @DisplayName("L3.9 - ForecastHour marked ACCEPTABLE when temperature is in the acceptable range")
+    void testForecastAcceptableIfTemperatureInRange() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour hour = forecastHour(LocalDateTime.now(), 10.0, 2.0, 0.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(hour));
+
+        assertThat(hour.getSuitability()).isEqualTo(HourSuitability.ACCEPTABLE);
+    }
+
+    // L3.10 - DUSK → ACCEPTABLE (near sunset).
+    @Test
+    @DisplayName("L3.10 - ForecastHour marked ACCEPTABLE at dusk")
+    void testForecastAcceptableIfDusk() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour hour = forecastHour(LocalDateTime.now(), 20.0, 2.0, 0.0, DayPart.DUSK);
+
+        evaluationService.evaluate(build, List.of(hour));
+
+        assertThat(hour.getSuitability()).isEqualTo(HourSuitability.ACCEPTABLE);
+    }
+
+    // L3.11 - DAY, temp 20 °C, no rain, no recent rain, wind 2 m/s < lower 5 m/s → IDEAL.
+    @Test
+    @DisplayName("L3.11 - ForecastHour marked IDEAL when all conditions are optimal")
+    void testForecastIdeal() {
+        BuildConfig build = buildWithWindThresholds(5.0, 10.0);
+        ForecastHour hour = forecastHour(LocalDateTime.now(), 20.0, 2.0, 0.0, DayPart.DAY);
+
+        evaluationService.evaluate(build, List.of(hour));
+
+        assertThat(hour.getSuitability()).isEqualTo(HourSuitability.IDEAL);
+    }
+
     //  Helpers
     private UserPreferences prefs(double foamboardWeight, double scaleFactor, Double minTWRatio, Integer minFlightTime) {
         UserPreferences p = new UserPreferences();
@@ -219,5 +407,35 @@ class ForwardChainingRulesTest {
         r.setWeight(5.0);
         r.setPowerConsumption(50.0);
         return r;
+    }
+
+    private AirplaneSpecs airplaneWithTwFactor(double recommendedTwFactor) {
+        AirplaneSpecs plane = new AirplaneSpecs();
+        plane.setName("Test Scout");
+        plane.setDryWeight(425.0);
+        plane.setWingArea(20.9);
+        plane.setWingspan(952.5);
+        plane.setLength(736.6);
+        plane.setControlSurfaceType(ControlSurfaceType.RUDDER_ELEVATOR_AILERONS);
+        plane.setRecommendedTwFactor(recommendedTwFactor);
+        return plane;
+    }
+
+    private BuildConfig buildWithWindThresholds(double lower, double upper) {
+        BuildConfig b = new BuildConfig();
+        b.setWindSpeedLowerThreshold(lower);
+        b.setWindSpeedUpperThreshold(upper);
+        return b;
+    }
+
+    private ForecastHour forecastHour(LocalDateTime timestamp, double temperature,
+                                      double windSpeed, double precipitation, DayPart dayPart) {
+        ForecastHour h = new ForecastHour();
+        h.setTimestamp(timestamp);
+        h.setTemperature(temperature);
+        h.setWindSpeed(windSpeed);
+        h.setPrecipitation(precipitation);
+        h.setDayPart(dayPart);
+        return h;
     }
 }

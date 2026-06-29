@@ -1,0 +1,46 @@
+:host {
+  display: block;
+  padding: 2px 24px 22px;
+}
+
+h2[mat-dialog-title] {
+  color: var(--text) !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  margin: 0 2px 18px !important;
+  padding: 0 !important;
+}
+
+.fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+
+.field-half {
+  flex: 1;
+}
+
+mat-dialog-content {
+  padding: 0 !important;
+  margin: 0 !important;
+  overflow: visible !important;
+  max-height: unset !important;
+}
+
+mat-dialog-actions {
+  display: flex;
+  padding: 20px 0 4px !important;
+  margin: 0 !important;
+  min-height: unset !important;
+  gap: 4px;
+
+  button {
+    flex: 0 0 110px;
+  }
+}

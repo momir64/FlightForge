@@ -1,0 +1,177 @@
+package rules
+
+import rs.moma.flightforge.model.BuildConfig;
+import rs.moma.flightforge.model.ForecastHour;
+import rs.moma.flightforge.model.HourSuitability;
+import rs.moma.flightforge.model.Maneuverability;
+import rs.moma.flightforge.model.BuildWarning;
+import rs.moma.flightforge.model.BuildWarningType;
+import rs.moma.flightforge.model.DayPart;
+import rs.moma.flightforge.model.UserPreferences;
+
+rule "L3.1 - Insufficient thrust warning"
+    when
+        $build : BuildConfig(
+            $tw : twFactor != null,
+            $prefs : userPreferences != null
+        )
+        eval($prefs.getMinTWRatio() != null && $tw < $prefs.getMinTWRatio())
+        not BuildWarning(type == BuildWarningType.INSUFFICIENT_THRUST)
+    then
+        insert(new BuildWarning(
+            BuildWarningType.INSUFFICIENT_THRUST,
+            "T/W factor " + String.format("%.3f", $tw) + " is below the required minimum of " + $prefs.getMinTWRatio() + ".",
+            "motor/propeller/battery",
+            $build
+        ));
+end
+
+rule "L3.2 - Classify maneuverability"
+    when
+        $build : BuildConfig(
+            maneuverability == null,
+            $tw : twFactor != null,
+            $wcl : wclFactor != null,
+            $airplane : airplane != null,
+            airplane.recommendedTwFactor > 0,
+            $prefs : userPreferences != null
+        )
+        eval($prefs.getMinTWRatio() == null || $tw >= $prefs.getMinTWRatio())
+    then
+        double twRatio = $tw / $build.getAirplane().getRecommendedTwFactor();
+        Maneuverability m;
+        if ($wcl > 12.0 || twRatio < 1.5) {
+            m = Maneuverability.HARD;
+        } else if ($wcl <= 6.0 && twRatio >= 2.0) {
+            m = Maneuverability.EASY;
+        } else {
+            m = Maneuverability.MEDIUM;
+        }
+        modify($build) { setManeuverability(m) }
+end
+
+rule "L3.3 - Compute wind speed thresholds"
+    when
+        $build : BuildConfig(
+            windSpeedLowerThreshold == null,
+            windSpeedUpperThreshold == null,
+            $man : maneuverability != null,
+            $auw : allUpWeight != null
+        )
+    then
+        double weightFactor = Math.sqrt($auw / 500.0);
+        double lower, upper;
+        if ($man == Maneuverability.EASY) {
+            lower = 3.0 * weightFactor;
+            upper = 7.0 * weightFactor;
+        } else if ($man == Maneuverability.MEDIUM) {
+            lower = 5.0 * weightFactor;
+            upper = 10.0 * weightFactor;
+        } else {
+            lower = 7.0 * weightFactor;
+            upper = 15.0 * weightFactor;
+        }
+        modify($build) {
+            setWindSpeedLowerThreshold(lower),
+            setWindSpeedUpperThreshold(upper)
+        }
+end
+
+rule "L3.4 - Forecast: unsuitable if raining"
+    salience 10
+    when
+        $hour : ForecastHour(suitability == null, precipitation > 0.0)
+    then
+        modify($hour) { setSuitability(HourSuitability.UNSUITABLE) }
+end
+
+rule "L3.5 - Forecast: unsuitable if night"
+    salience 10
+    when
+        $hour : ForecastHour(suitability == null, dayPart == DayPart.NIGHT)
+    then
+        modify($hour) { setSuitability(HourSuitability.UNSUITABLE) }
+end
+
+rule "L3.6 - Forecast: unsuitable if wind exceeds upper threshold"
+    salience 10
+    when
+        $build : BuildConfig($upper : windSpeedUpperThreshold != null)
+        $hour : ForecastHour(suitability == null, $wind : windSpeed)
+        eval($wind > $upper)
+    then
+        modify($hour) { setSuitability(HourSuitability.UNSUITABLE) }
+end
+
+rule "L3.7 - Forecast: unsuitable if temperature is extreme"
+    salience 10
+    when
+        $hour : ForecastHour(suitability == null, temperature < 0.0 || temperature > 30.0)
+    then
+        modify($hour) { setSuitability(HourSuitability.UNSUITABLE) }
+end
+
+rule "L3.8 - Forecast: acceptable if recently rained"
+    salience 5
+    when
+        $hour : ForecastHour(suitability == null, precipitation == 0.0, $ts : timestamp)
+        ForecastHour(this != $hour, precipitation > 0.0,
+                     timestamp >= $ts.minusHours(2), timestamp < $ts)
+    then
+        modify($hour) { setSuitability(HourSuitability.ACCEPTABLE) }
+end
+
+rule "L3.9 - Forecast: acceptable if wind in middle range"
+    salience 5
+    when
+        $build : BuildConfig(
+            $lower : windSpeedLowerThreshold != null,
+            $upper : windSpeedUpperThreshold != null
+        )
+        $hour : ForecastHour(suitability == null, $wind : windSpeed)
+        eval($wind >= $lower && $wind <= $upper)
+    then
+        modify($hour) { setSuitability(HourSuitability.ACCEPTABLE) }
+end
+
+rule "L3.10 - Forecast: acceptable if temperature in acceptable range"
+    salience 5
+    when
+        $hour : ForecastHour(
+            suitability == null,
+            (temperature >= 5.0 && temperature < 15.0) || (temperature > 25.0 && temperature <= 30.0)
+        )
+    then
+        modify($hour) { setSuitability(HourSuitability.ACCEPTABLE) }
+end
+
+rule "L3.11 - Forecast: acceptable if near sunset"
+    salience 5
+    when
+        $hour : ForecastHour(suitability == null, dayPart == DayPart.DUSK)
+    then
+        modify($hour) { setSuitability(HourSuitability.ACCEPTABLE) }
+end
+
+rule "L3.12 - Forecast: ideal conditions"
+    when
+        $build : BuildConfig($lower : windSpeedLowerThreshold != null)
+        $hour : ForecastHour(
+            suitability == null,
+            dayPart == DayPart.DAY || dayPart == DayPart.DAWN,
+            temperature >= 15.0,
+            temperature <= 25.0,
+            precipitation == 0.0,
+            $wind : windSpeed,
+            $ts : timestamp
+        )
+        eval($wind < $lower)
+        not ForecastHour(
+            this != $hour,
+            precipitation > 0.0,
+            timestamp >= $ts.minusHours(2),
+            timestamp < $ts
+        )
+    then
+        modify($hour) { setSuitability(HourSuitability.IDEAL) }
+end

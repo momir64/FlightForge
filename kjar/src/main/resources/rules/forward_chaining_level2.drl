@@ -3,7 +3,7 @@ package rules
 import rs.moma.flightforge.model.BuildConfig;
 import rs.moma.flightforge.model.BuildWarning;
 import rs.moma.flightforge.model.BuildWarningType;
-import rs.moma.flightforge.model.Servo;
+import rs.moma.flightforge.utils.BuildHelper;
 
 rule "L2.1 - Compute T/W factor"
     when
@@ -67,19 +67,20 @@ rule "L2.5 - Warning: battery max current insufficient"
     when
         $build : BuildConfig(
             $total : totalMaxConsumption != null,
-            $battery : battery != null
+            $battery : battery != null,
+            $mc : motorConfiguration != null
         )
-        eval($battery.getCapacity() * $battery.getCRating() / 1000.0 < $total)
-        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BATTERY, build == $build)
+        eval($battery.getCapacity() * $battery.getCRating() / 1000.0 < $total
+                                    || $battery.getCellCount() != $mc.getCellCount())
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BATTERY)
     then
-        insert(new BuildWarning(
-            BuildWarningType.INCOMPATIBLE_BATTERY,
-            String.format("Battery max output (%.1f A) is less than total consumption (%.1f A). " +
+        String message = $battery.getCellCount() != $mc.getCellCount()
+            ? String.format("Battery cell count (%dS) does not match motor configuration (%dS).",
+                $battery.getCellCount(), $mc.getCellCount())
+            : String.format("Battery max output (%.1f A) is less than total consumption (%.1f A). " +
                 "Choose a higher C-rating or larger capacity.",
-                $battery.getCapacity() * $battery.getCRating() / 1000.0, $total),
-            $battery.getName(),
-            $build
-        ));
+                $battery.getCapacity() * $battery.getCRating() / 1000.0, $total);
+        insert(new BuildWarning(BuildWarningType.INCOMPATIBLE_BATTERY, message, $battery.getName(), $build));
 end
 
 rule "L2.6 - Warning: ESC current rating too low"
@@ -88,16 +89,17 @@ rule "L2.6 - Warning: ESC current rating too low"
             $esc : esc != null,
             $mc : motorConfiguration != null
         )
-        eval($esc.getContinuousCurrent() < $mc.getMaxCurrent())
-        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_ESC, build == $build)
+        eval($esc.getContinuousCurrent() < $mc.getMaxCurrent()
+                                    || $esc.getMinCellCount() > $mc.getCellCount()
+                                    || $esc.getMaxCellCount() < $mc.getCellCount())
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_ESC)
     then
-        insert(new BuildWarning(
-            BuildWarningType.INCOMPATIBLE_ESC,
-            String.format("ESC continuous rating (%.0f A) is below motor max current (%.0f A). " +
-                "The ESC may overheat or fail under load.", $esc.getContinuousCurrent(), $mc.getMaxCurrent()),
-            $esc.getName(),
-            $build
-        ));
+        String message = ($esc.getMinCellCount() > $mc.getCellCount() || $esc.getMaxCellCount() < $mc.getCellCount())
+            ? String.format("ESC cell range (%d-%dS) is incompatible with motor configuration (%dS).",
+                $esc.getMinCellCount(), $esc.getMaxCellCount(), $mc.getCellCount())
+            : String.format("ESC continuous rating (%.0f A) is below motor max current (%.0f A). " +
+                "The ESC may overheat or fail under load.", $esc.getContinuousCurrent(), $mc.getMaxCurrent());
+        insert(new BuildWarning(BuildWarningType.INCOMPATIBLE_ESC, message, $esc.getName(), $build));
 end
 
 // becMaxCurrent is in A, servo stallCurrent and receiver powerConsumption are in mA (from DB).
@@ -108,19 +110,17 @@ rule "L2.7 - Warning: BEC current insufficient"
             $servos : servos != null,
             $receiver : receiver != null
         )
-        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BEC, build == $build)
+        eval($esc.getBecMaxCurrent() < BuildHelper.servoAndReceiverLoad($servos, $receiver))
+        not BuildWarning(type == BuildWarningType.INCOMPATIBLE_BEC)
     then
-        double controlLoad = $servos.stream().mapToDouble(s -> ((Servo) s).getStallCurrent()).sum() / 1000.0
-                           + $receiver.getPowerConsumption() / 1000.0;
-        if ($esc.getBecMaxCurrent() < controlLoad) {
-            insert(new BuildWarning(
-                BuildWarningType.INCOMPATIBLE_BEC,
-                String.format("BEC max current (%.2f A) is less than servo + receiver load (%.2f A). " +
-                    "Control surfaces may become unresponsive.", $esc.getBecMaxCurrent(), controlLoad),
-                $esc.getName(),
-                $build
-            ));
-        }
+        double controlLoad = BuildHelper.servoAndReceiverLoad($servos, $receiver);
+        insert(new BuildWarning(
+            BuildWarningType.INCOMPATIBLE_BEC,
+            String.format("BEC max current (%.2f A) is less than servo + receiver load (%.2f A). " +
+                "Control surfaces may become unresponsive.", $esc.getBecMaxCurrent(), controlLoad),
+            $esc.getName(),
+            $build
+        ));
 end
 
 rule "L2.8 - Warning: estimated flight time too short"
@@ -132,7 +132,7 @@ rule "L2.8 - Warning: estimated flight time too short"
             $battery : battery != null
         )
         eval($eft < $prefs.getMinFlightTime())
-        not BuildWarning(type == BuildWarningType.INSUFFICIENT_CAPACITY, build == $build)
+        not BuildWarning(type == BuildWarningType.INSUFFICIENT_CAPACITY)
     then
         insert(new BuildWarning(
             BuildWarningType.INSUFFICIENT_CAPACITY,

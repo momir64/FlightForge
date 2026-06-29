@@ -1,0 +1,11 @@
+<div class="alert-wrap">
+  <div class="alert-header">
+    <span class="material-symbols-rounded alert-icon">warning</span>
+    <span class="alert-title">Flight Alert</span>
+  </div>
+  <div class="alert-type">{{ data.type.replace('_', ' ') }}</div>
+  <div mat-dialog-content class="alert-msg">{{ data.message }}</div>
+  <mat-dialog-actions align="end">
+    <button mat-flat-button mat-dialog-close>Dismiss</button>
+  </mat-dialog-actions>
+</div>
