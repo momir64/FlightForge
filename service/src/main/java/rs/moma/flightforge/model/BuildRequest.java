@@ -8,7 +8,7 @@ public class BuildRequest {
     private double foamboardWeight;
     private double scaleFactor;
     private Double minTWRatio;
-    private Integer minFlightTime;
+    private Double minFlightTime;
     private Priority priority;
     private boolean metalGearsPreference;
     private String location;

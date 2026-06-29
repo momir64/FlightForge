@@ -136,7 +136,7 @@ rule "L2.8 - Warning: estimated flight time too short"
     then
         insert(new BuildWarning(
             BuildWarningType.INSUFFICIENT_CAPACITY,
-            String.format("Estimated flight time (%.1f min) is below required minimum (%d min). " +
+            String.format("Estimated flight time (%.1f min) is below required minimum (%.1f min). " +
                 "Use a higher capacity battery.", $eft, $prefs.getMinFlightTime()),
             $battery.getName(),
             $build

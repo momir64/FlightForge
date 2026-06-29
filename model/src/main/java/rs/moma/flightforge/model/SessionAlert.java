@@ -10,7 +10,6 @@ public class SessionAlert {
     private String message;
     private ScheduledSession session;
     private ForecastHour triggeredBy;
-    private boolean sent;
 
     public SessionAlert(SessionAlertType type, String message, ScheduledSession session, ForecastHour triggeredBy) {
         this.type = type;

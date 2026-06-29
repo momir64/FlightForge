@@ -16,6 +16,7 @@ import rs.moma.flightforge.model.*;
 import org.kie.api.KieServices;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -55,10 +56,12 @@ public class CepDemoRunner implements CommandLineRunner {
         printHeader("CEP Scenario 1: FLIGHT_REMINDER — session tomorrow, ideal forecast");
         CepService cep = makeCepService();
         try {
+            List<SessionAlert> alerts = new ArrayList<>();
+            cep.setAlertListener(alerts::add);
             cep.setBuild(build);
             cep.updateForecast(idealForecast());
             cep.addSession(new ScheduledSession(NOW.plusDays(1).withHour(14), NOW.plusDays(1).withHour(16), build));
-            printAlerts(cep.drainAlerts());
+            printAlerts(alerts);
         } finally {cep.dispose();}
     }
 
@@ -69,13 +72,14 @@ public class CepDemoRunner implements CommandLineRunner {
             cep.setBuild(build);
             cep.updateForecast(idealForecast());
             cep.addSession(new ScheduledSession(NOW.plusDays(1).withHour(14), NOW.plusDays(1).withHour(16), build));
-            cep.drainAlerts();
+            List<SessionAlert> alerts = new ArrayList<>();
+            cep.setAlertListener(alerts::add);
 
             List<ForecastHour> updated = idealForecast();
             updated.set(indexOf(updated, NOW.plusDays(1).withHour(15)),
                         new ForecastHour(NOW.plusDays(1).withHour(15), 20.0, 3.0, 5.0, DayPart.DAY, null));
             cep.updateForecast(updated);
-            printAlerts(cep.drainAlerts());
+            printAlerts(alerts);
         } finally {cep.dispose();}
     }
 
@@ -83,6 +87,8 @@ public class CepDemoRunner implements CommandLineRunner {
         printHeader("CEP Scenario 3: FINISH_FLIGHT — current time inside session, bad weather in 1 hour");
         CepService cep = makeCepService();
         try {
+            List<SessionAlert> alerts = new ArrayList<>();
+            cep.setAlertListener(alerts::add);
             cep.setBuild(build);
             cep.addSession(new ScheduledSession(NOW.withHour(9), NOW.withHour(11), build));
 
@@ -90,7 +96,7 @@ public class CepDemoRunner implements CommandLineRunner {
             forecast.set(indexOf(forecast, NOW.withHour(11)),
                          new ForecastHour(NOW.withHour(11), 20.0, 3.0, 8.0, DayPart.DAY, null));
             cep.updateForecast(forecast);
-            printAlerts(cep.drainAlerts());
+            printAlerts(alerts);
         } finally {cep.dispose();}
     }
 
@@ -101,7 +107,6 @@ public class CepDemoRunner implements CommandLineRunner {
             cep.setBuild(build);
             cep.updateForecast(idealForecast());
             cep.addSession(new ScheduledSession(NOW.withHour(11), NOW.withHour(13), build));
-            cep.drainAlerts();
 
             System.out.printf("  Sessions before: %d%n", cep.getScheduledSessions().size());
             cep.setCurrentTime(NOW.withHour(14));

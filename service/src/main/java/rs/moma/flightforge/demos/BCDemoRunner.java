@@ -41,17 +41,17 @@ public class BCDemoRunner implements CommandLineRunner {
                     simpleScout, makePrefs(Priority.MIN_PRICE, true, null, null, 2.927), receiver);
 
         runScenario("BC Scenario 3: FT Simple Scout, MAX_FLIGHT_TIME, 5 min minimum",
-                    simpleScout, makePrefs(Priority.MAX_FLIGHT_TIME, false, null, 5, 2.927), receiver);
+                    simpleScout, makePrefs(Priority.MAX_FLIGHT_TIME, false, null, 5.0, 2.927), receiver);
 
         runScenario("BC Scenario 4: FT Simple Storch, T/W 5.0 required -> INSUFFICIENT_THRUST",
                     simpleStorch, makePrefs(Priority.MIN_WEIGHT, false, 5.0, null, 2.927), receiver);
 
         runScenario("BC Scenario 5: FT Edge, 120 min flight time -> INSUFFICIENT_CAPACITY",
-                    ftEdge, makePrefs(Priority.MIN_WEIGHT, false, null, 120, 2.927), receiver);
+                    ftEdge, makePrefs(Priority.MIN_WEIGHT, false, null, 120.0, 2.927), receiver);
     }
 
     private UserPreferences makePrefs(Priority priority, boolean metalGears,
-                                      Double minTWRatio, Integer minFlightTime, double foamboardWeight) {
+                                      Double minTWRatio, Double minFlightTime, double foamboardWeight) {
         UserPreferences prefs = new UserPreferences();
         prefs.setFoamboardWeight(foamboardWeight);
         prefs.setScaleFactor(1.0);

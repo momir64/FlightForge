@@ -31,12 +31,15 @@ public class CepService {
     @Autowired
     public CepService(KieContainer kieContainer) {
         this(kieContainer.newKieSession("FlightForgeCEPSession"));
+        SessionPseudoClock clock = session.getSessionClock();
+        clock.advanceTime(System.currentTimeMillis() - clock.getCurrentTime(), TimeUnit.MILLISECONDS);
     }
 
     public CepService(KieSession session) {
         this.session = session;
-        SessionPseudoClock clock = session.getSessionClock();
-        clock.advanceTime(System.currentTimeMillis() - clock.getCurrentTime(), TimeUnit.MILLISECONDS);
+        session.registerChannel("alerts", object -> {
+            if (alertListener != null) alertListener.accept((SessionAlert) object);
+        });
     }
 
     public synchronized void setAlertListener(Consumer<SessionAlert> listener) {
@@ -71,7 +74,6 @@ public class CepService {
     public synchronized void removeSession(LocalDateTime startTime) {
         deleteAll(o -> switch (o) {
             case ScheduledSession ss -> ss.getStartTime().equals(startTime);
-            case SessionAlert sa -> sa.getSession().getStartTime().equals(startTime);
             case ReminderSent rs -> rs.getSessionStartTime().equals(startTime);
             case WeatherDeteriorationDetected wd -> wd.getSession().getStartTime().equals(startTime);
             default -> false;
@@ -103,18 +105,6 @@ public class CepService {
         LocalDateTime now = LocalDateTime.ofInstant(Instant.ofEpochMilli(session.getSessionClock().getCurrentTime()), ZoneId.systemDefault());
         currentTimeHandle = session.insert(new CurrentTime(now));
         session.fireAllRules();
-        if (alertListener != null)
-            drainAlerts().forEach(alertListener);
-    }
-
-    public synchronized List<SessionAlert> drainAlerts() {
-        List<SessionAlert> alerts = session.getObjects(obj -> obj instanceof SessionAlert sa && !sa.isSent())
-                                           .stream().map(SessionAlert.class::cast).collect(Collectors.toList());
-        alerts.forEach(alert -> {
-            alert.setSent(true);
-            session.update(session.getFactHandle(alert), alert);
-        });
-        return alerts;
     }
 
     public synchronized List<ForecastHour> getForecastHours() {

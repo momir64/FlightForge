@@ -110,7 +110,7 @@ class ForwardChainingRulesTest {
     @Test
     @DisplayName("L2.4 + L2.8 - flight time computed and warning raised when below user minimum")
     void testFlightTimeWarning() {
-        BuildConfig build = minimalBuild(airplane, prefs(2.927, 1.0, null, 8));
+        BuildConfig build = minimalBuild(airplane, prefs(2.927, 1.0, null, 8.0));
         build.setBattery(battery("Tiny Battery", 450, 100.0, 42.0));
 
         List<BuildWarning> warnings = evaluationService.evaluate(build);
@@ -316,7 +316,7 @@ class ForwardChainingRulesTest {
     }
 
     //  Helpers
-    private UserPreferences prefs(double foamboardWeight, double scaleFactor, Double minTWRatio, Integer minFlightTime) {
+    private UserPreferences prefs(double foamboardWeight, double scaleFactor, Double minTWRatio, Double minFlightTime) {
         UserPreferences p = new UserPreferences();
         p.setFoamboardWeight(foamboardWeight);
         p.setScaleFactor(scaleFactor);

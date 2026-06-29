@@ -48,7 +48,7 @@
     <input matInput
       [ngModel]="state.minFlightTime"
       (ngModelChange)="patch('minFlightTime', $event || null)"
-      (input)="onNumericInput($event, false)">
+      (input)="onNumericInput($event, true)">
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="field-md compact-field">

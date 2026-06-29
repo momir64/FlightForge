@@ -49,11 +49,11 @@ public class DemoRunner implements CommandLineRunner {
     private BuildConfig buildProblem(AirplaneSpecs plane, MotorConfiguration mc, Servo servo, Receiver receiver) {
         ESC esc = escRepository.findById(19L).orElseThrow();             // ZTW Mantis G2 6A -> too weak
         Battery battery = batteryRepository.findById(36L).orElseThrow(); // Tattu 450 mAh 3S 95C -> too small
-        return makeBuild(plane, mc, esc, battery, List.of(servo, servo), receiver, 2.927, 1.0, 5);
+        return makeBuild(plane, mc, esc, battery, List.of(servo, servo), receiver, 2.927, 1.0, 5.0);
     }
 
     private BuildConfig makeBuild(AirplaneSpecs plane, MotorConfiguration mc, ESC esc, Battery battery, List<Servo> servos,
-                                  Receiver receiver, double foamboardWeight, double scaleFactor, Integer minFlightTime) {
+                                  Receiver receiver, double foamboardWeight, double scaleFactor, Double minFlightTime) {
         UserPreferences prefs = new UserPreferences();
         prefs.setFoamboardWeight(foamboardWeight);
         prefs.setScaleFactor(scaleFactor);

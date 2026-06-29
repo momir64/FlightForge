@@ -42,7 +42,7 @@ rule "CEP.1 - Flight reminder for tomorrow's session"
     then
         insert(new ReminderSent($start));
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm");
-        insert(new SessionAlert(
+        channels["alerts"].send(new SessionAlert(
             SessionAlertType.FLIGHT_REMINDER,
             "Reminder: you have a flight session scheduled tomorrow " + $start.format(fmt) + ".",
             $session,
@@ -87,12 +87,10 @@ rule "CEP.4 - Expire past sessions"
     when
         $now : CurrentTime()
         $session : ScheduledSession($start : startTime, endTime before $now)
-        $alerts : java.util.List() from collect(SessionAlert(session == $session))
         $reminders : java.util.List() from collect(ReminderSent(sessionStartTime == $start))
         $detections : java.util.List() from collect(WeatherDeteriorationDetected(session == $session))
     then
         delete($session);
-        for (Object a : $alerts) delete(a);
         for (Object r : $reminders) delete(r);
         for (Object d : $detections) delete(d);
 end
@@ -108,7 +106,6 @@ end
 rule "CEP.5 - Compose weather deterioration alert"
     when
         $detected : WeatherDeteriorationDetected($type : type, $session : session, $hour : hour)
-        not SessionAlert(type == $type, session == $session, triggeredBy == $hour)
     then
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd.MM.yyyy 'at' HH:mm");
         String reason = $hour.getPrecipitation() > 0.0 ? String.format("rain (%.1f mm)", $hour.getPrecipitation())
@@ -118,5 +115,5 @@ rule "CEP.5 - Compose weather deterioration alert"
         String message = $type == SessionAlertType.SESSION_NO_LONGER_SUITABLE
             ? "Session at " + $session.getStartTime().format(fmt) + " is no longer suitable: " + reason + " expected at " + $hour.getTimestamp().format(fmt) + "."
             : "Conditions deteriorating (" + reason + ") — finish your flight before " + $hour.getTimestamp().format(fmt) + ".";
-        insert(new SessionAlert($type, message, $session, $hour));
+        channels["alerts"].send(new SessionAlert($type, message, $session, $hour));
 end

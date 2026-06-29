@@ -83,7 +83,7 @@ public class BackwardChainingService {
             return "No available battery matches the cell count and discharge requirements.";
 
         if (prefs.getMinFlightTime() != null && session.getQueryResults("findBattery", mc, plane, prefs, servo, receiver, Variable.v).size() == 0)
-            return String.format("No available battery provides sufficient capacity for %d minutes of flight.", prefs.getMinFlightTime());
+            return String.format("No available battery provides sufficient capacity for %.1f minutes of flight.", prefs.getMinFlightTime());
 
         return "No complete combination satisfies all constraints simultaneously.";
     }
